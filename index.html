@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ฝึกซ้อมสูตรคูณเร็ว</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles & Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        
+        /* Disable tap highlight on mobile */
+        body {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        /* Support for notched phones */
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 10px); }
+    </style>
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none">
+
+    <!-- ==================== MENU SCREEN ==================== -->
+    <div id="menuScreen" class="h-[100dvh] flex flex-col items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md text-center my-auto">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <!-- Clock Icon -->
+                <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-1">ฝึกซ้อมสูตรคูณเร็ว</h1>
+            <p class="text-sm sm:text-base text-gray-500 mb-6">Buriram 11th Number Crunching</p>
+            
+            <!-- Play Mode Selector -->
+            <div class="mb-5">
+                <p class="text-sm text-gray-500 mb-2 font-medium text-left">เลือกโหมดการเล่น:</p>
+                <div class="flex flex-col gap-2">
+                    <button id="btnModeExam" onclick="setPlayMode('exam')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm ring-2 ring-blue-600 flex items-center justify-between">
+                        <span class="flex flex-col items-start">
+                            <span>โหมดแข่งขัน (เสมือนจริง)</span>
+                            <span class="text-xs font-normal text-gray-500 mt-0.5">พิมพ์แล้วกด Enter / ตรวจคะแนนตอนจบ</span>
+                        </span>
+                        <svg id="iconModeExam" class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                    <button id="btnModeTraining" onclick="setPlayMode('training')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 flex items-center justify-between">
+                        <span class="flex flex-col items-start">
+                            <span>โหมดฝึกซ้อม</span>
+                            <span class="text-xs font-normal text-gray-400 mt-0.5">พิมพ์ถูกเปลี่ยนข้ออัตโนมัติทันที</span>
+                        </span>
+                        <svg id="iconModeTraining" class="w-5 h-5 text-blue-600 hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Numpad Style Selector -->
+            <div class="mb-8">
+                <p class="text-sm text-gray-500 mb-2 font-medium text-left">เลือกรูปแบบแป้นพิมพ์:</p>
+                <div class="flex bg-gray-100 p-1.5 rounded-xl">
+                    <button id="btnStylePhone" onclick="setNumpadStyle('phone')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-blue-600 shadow-sm ring-1 ring-black/5">
+                        1-2-3 อยู่บน
+                    </button>
+                    <button id="btnStyleCalc" onclick="setNumpadStyle('calculator')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-gray-700">
+                        7-8-9 อยู่บน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Level Selector -->
+            <div class="space-y-3 pb-safe">
+                <button onclick="startGame('primary')" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    เริ่มระดับประถมศึกษา
+                </button>
+                <button onclick="startGame('secondary')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    เริ่มระดับมัธยมศึกษา
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PLAYING SCREEN ==================== -->
+    <div id="playingScreen" class="h-[100dvh] hidden bg-slate-50 items-center justify-center md:p-4">
+        <div class="w-full h-full md:h-[95vh] md:max-w-md bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+            
+            <!-- Header Bar -->
+            <div class="bg-blue-600 text-white p-3 md:p-4 pt-safe flex justify-between items-center shrink-0 shadow-sm z-20">
+                <button onclick="toggleGridModal(true)" class="p-2 bg-blue-500 rounded-xl active:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                </button>
+                <div id="timerDisplay" class="text-center font-mono text-xl md:text-2xl font-bold tracking-wider">
+                    30:00
+                </div>
+                <button onclick="toggleConfirmModal(true)" class="p-2 bg-blue-500 rounded-xl active:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+
+            <!-- Progress Info -->
+            <div class="px-5 py-2 bg-blue-50 flex justify-between items-center text-blue-800 text-sm md:text-base font-medium shrink-0 border-b border-blue-100">
+                <span id="setInfo">ชุดที่ 1 / 5</span>
+                <span id="questionInfo">ข้อ 1 / 250</span>
+            </div>
+
+            <!-- Question Area (Flexible) -->
+            <div class="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 bg-white min-h-[100px] relative overflow-hidden">
+                <div class="flex flex-row items-center justify-center w-full">
+                    <div id="questionText" class="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-800 tracking-tighter whitespace-nowrap">
+                        <!-- Dynamic Question -->
+                    </div>
+                    <div class="h-12 sm:h-16 md:h-20 w-[110px] sm:w-[150px] md:w-[180px] border-b-4 border-blue-600 flex items-center justify-center text-5xl sm:text-6xl md:text-7xl font-bold text-blue-600 ml-2 sm:ml-4 pb-1 sm:pb-2">
+                        <span id="answerText"></span>
+                        <span class="w-1 h-10 sm:h-12 md:h-14 bg-blue-400 animate-pulse ml-1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls & Numpad Area -->
+            <div class="bg-slate-100 p-2 md:p-3 pb-safe shrink-0 rounded-t-3xl border-t border-gray-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.08)] relative z-10">
+                <div class="w-full max-w-[340px] mx-auto flex flex-col pb-1 md:pb-2">
+                    
+                    <!-- Main Custom Numpad Container -->
+                    <div id="numpadContainer" class="grid grid-cols-3 gap-1.5 sm:gap-2 auto-rows-[3.2rem] sm:auto-rows-[3.8rem] md:auto-rows-[4.2rem]">
+                        <!-- Dynamic Numpad Buttons generated via JS -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== RESULT SCREEN ==================== -->
+    <div id="resultScreen" class="min-h-[100dvh] hidden flex-col items-center py-10 p-4 overflow-y-auto pt-safe pb-safe bg-slate-50">
+        <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-2xl my-auto">
+            <div class="text-center mb-8">
+                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800">จบการทดสอบ</h2>
+                <p id="timeUsedText" class="text-gray-500 font-medium">ใช้เวลาไป 00:00</p>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-3xl mb-8 text-center border border-blue-100 shadow-inner">
+                <div class="text-sm text-blue-600 font-bold mb-1 tracking-wide">คะแนนที่ได้</div>
+                <div id="finalScoreText" class="text-6xl font-black text-blue-700 mb-3 drop-shadow-sm">0</div>
+                <div id="scoreDetailsContainer">
+                    <!-- Dynamic Score Details -->
+                </div>
+            </div>
+
+            <div id="wrongAnswersContainer" class="mb-8 hidden">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="text-red-500 w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    ข้อที่ผิด หรือ ไม่ได้ตอบ (<span id="wrongCountText">0</span> ข้อ)
+                </h3>
+                <div class="max-h-[300px] overflow-y-auto bg-gray-50 rounded-2xl p-2 border border-gray-200 custom-scrollbar">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-500 uppercase bg-gray-100 sticky top-0">
+                            <tr>
+                                <th class="px-4 py-3 rounded-tl-xl">ข้อที่</th>
+                                <th class="px-4 py-3">โจทย์</th>
+                                <th class="px-4 py-3 text-red-500">คำตอบคุณ</th>
+                                <th class="px-4 py-3 text-green-600 rounded-tr-xl">เฉลย</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wrongAnswersTbody">
+                            <!-- Rows injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button onclick="goToMenu()" class="w-full py-4 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-bold text-lg transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                กลับหน้าหลัก
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- Grid Modal -->
+    <div id="gridModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm" onclick="toggleGridModal(false)">
+        <div class="bg-white rounded-3xl w-full max-w-lg p-5 flex flex-col max-h-[80vh] shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">เลือกข้อที่ต้องการทำ</h3>
+                <button onclick="toggleGridModal(false)" class="text-gray-400 bg-gray-100 rounded-full p-2 hover:bg-gray-200 transition-colors">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                </button>
+            </div>
+            <div id="gridContainer" class="flex-1 overflow-y-auto grid grid-cols-10 gap-1 content-start pb-4 pr-2 custom-scrollbar">
+                <!-- Grid buttons injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Submit Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm" onclick="toggleConfirmModal(false)">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600 ml-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-2 text-gray-800">ยืนยันการส่งข้อสอบ?</h3>
+            <p id="confirmText" class="text-gray-500 mb-8 font-medium">
+                คุณทำไปแล้ว 0 / 250 ข้อ
+            </p>
+            <div class="flex gap-3">
+                <button onclick="toggleConfirmModal(false)" class="flex-1 py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors">
+                    ทำต่อ
+                </button>
+                <button onclick="confirmAndSubmit()" class="flex-1 py-3.5 bg-green-500 text-white font-bold rounded-2xl active:bg-green-600 shadow-md shadow-green-200 transition-all">
+                    ส่งข้อสอบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPT ==================== -->
+    
+
+    <script src="script.min.js"></script>
+</body>
+</html>
