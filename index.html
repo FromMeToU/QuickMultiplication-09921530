@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom Styles & Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         
@@ -22,10 +22,10 @@
         .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 10px); }
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none">
+<body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
 
     <!-- ==================== MENU SCREEN ==================== -->
-    <div id="menuScreen" class="h-[100dvh] flex flex-col items-center justify-center p-4 overflow-y-auto">
+    <div id="menuScreen" class="h-[100dvh] w-full flex flex-col items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md text-center my-auto">
             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <!-- Clock Icon -->
@@ -83,7 +83,7 @@
     </div>
 
     <!-- ==================== PLAYING SCREEN ==================== -->
-    <div id="playingScreen" class="h-[100dvh] hidden bg-slate-50 items-center justify-center md:p-4">
+    <div id="playingScreen" class="h-[100dvh] w-full hidden bg-slate-50 items-center justify-center md:p-4">
         <div class="w-full h-full md:h-[95vh] md:max-w-md bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
             
             <!-- Header Bar -->
@@ -119,9 +119,21 @@
             </div>
 
             <!-- Controls & Numpad Area -->
-            <div class="bg-slate-100 p-2 md:p-3 pb-safe shrink-0 rounded-t-3xl border-t border-gray-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.08)] relative z-10">
+            <div class="bg-slate-100 p-2 md:p-3 pb-safe shrink-0 rounded-t-3xl border-t border-gray-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.08)] relative z-10 w-full">
                 <div class="w-full max-w-[340px] mx-auto flex flex-col pb-1 md:pb-2">
                     
+                    <!-- Prev / Next Controls Above Numpad -->
+                    <div class="grid grid-cols-2 gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                        <button onclick="changeQuestion(-1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> 
+                            ย้อนกลับ
+                        </button>
+                        <button onclick="changeQuestion(1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
+                            ข้าม 
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+
                     <!-- Main Custom Numpad Container -->
                     <div id="numpadContainer" class="grid grid-cols-3 gap-1.5 sm:gap-2 auto-rows-[3.2rem] sm:auto-rows-[3.8rem] md:auto-rows-[4.2rem]">
                         <!-- Dynamic Numpad Buttons generated via JS -->
@@ -133,47 +145,51 @@
     </div>
 
     <!-- ==================== RESULT SCREEN ==================== -->
-    <div id="resultScreen" class="min-h-[100dvh] hidden flex-col items-center py-10 p-4 overflow-y-auto pt-safe pb-safe bg-slate-50">
-        <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-2xl my-auto">
-            <div class="text-center mb-8">
-                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <div id="resultScreen" class="h-[100dvh] hidden w-full flex-col items-center justify-center p-3 sm:p-4 pt-safe pb-safe bg-slate-50">
+        <!-- Changed to flex-col and max-h-full to ensure it never overflows vertically -->
+        <div class="bg-white p-4 sm:p-8 rounded-3xl shadow-xl w-full max-w-full sm:max-w-2xl flex flex-col max-h-full overflow-hidden">
+            
+            <div class="text-center mb-3 sm:mb-6 shrink-0">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-green-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">จบการทดสอบ</h2>
-                <p id="timeUsedText" class="text-gray-500 font-medium">ใช้เวลาไป 00:00</p>
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">จบการทดสอบ</h2>
+                <p id="timeUsedText" class="text-sm sm:text-base text-gray-500 font-medium">ใช้เวลาไป 00:00</p>
             </div>
 
-            <div class="bg-blue-50 p-6 rounded-3xl mb-8 text-center border border-blue-100 shadow-inner">
-                <div class="text-sm text-blue-600 font-bold mb-1 tracking-wide">คะแนนที่ได้</div>
-                <div id="finalScoreText" class="text-6xl font-black text-blue-700 mb-3 drop-shadow-sm">0</div>
+            <div class="bg-blue-50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 text-center border border-blue-100 shadow-inner w-full shrink-0">
+                <div class="text-xs sm:text-sm text-blue-600 font-bold mb-1 tracking-wide">คะแนนที่ได้</div>
+                <div id="finalScoreText" class="text-5xl sm:text-6xl font-black text-blue-700 mb-2 sm:mb-3 drop-shadow-sm">0</div>
                 <div id="scoreDetailsContainer">
                     <!-- Dynamic Score Details -->
                 </div>
             </div>
 
-            <div id="wrongAnswersContainer" class="mb-8 hidden">
-                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="text-red-500 w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                    ข้อที่ผิด หรือ ไม่ได้ตอบ (<span id="wrongCountText">0</span> ข้อ)
+            <!-- Table section with flex-1 and min-h-0 allows internal scrolling without breaking layout -->
+            <div id="wrongAnswersContainer" class="mb-4 sm:mb-6 hidden flex-col flex-1 min-h-0 w-full">
+                <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2 sm:mb-3 flex items-center gap-2 shrink-0">
+                    <svg class="text-red-500 w-5 h-5 sm:w-6 sm:h-6 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    <span>ข้อที่ผิด หรือ ไม่ได้ตอบ (<span id="wrongCountText">0</span> ข้อ)</span>
                 </h3>
-                <div class="max-h-[300px] overflow-y-auto bg-gray-50 rounded-2xl p-2 border border-gray-200 custom-scrollbar">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-100 sticky top-0">
+                
+                <div class="flex-1 w-full overflow-auto bg-gray-50 rounded-xl sm:rounded-2xl border border-gray-200 custom-scrollbar">
+                    <table class="w-full text-xs sm:text-sm text-left relative">
+                        <thead class="text-gray-500 uppercase bg-gray-100 sticky top-0 z-10 shadow-sm">
                             <tr>
-                                <th class="px-4 py-3 rounded-tl-xl">ข้อที่</th>
-                                <th class="px-4 py-3">โจทย์</th>
-                                <th class="px-4 py-3 text-red-500">คำตอบคุณ</th>
-                                <th class="px-4 py-3 text-green-600 rounded-tr-xl">เฉลย</th>
+                                <th class="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap bg-gray-100 rounded-tl-xl sm:rounded-tl-2xl">ข้อที่</th>
+                                <th class="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap bg-gray-100">โจทย์</th>
+                                <th class="px-3 sm:px-4 py-2 sm:py-3 text-red-500 whitespace-nowrap bg-gray-100">คำตอบคุณ</th>
+                                <th class="px-3 sm:px-4 py-2 sm:py-3 text-green-600 whitespace-nowrap bg-gray-100 rounded-tr-xl sm:rounded-tr-2xl">เฉลย</th>
                             </tr>
                         </thead>
-                        <tbody id="wrongAnswersTbody">
+                        <tbody id="wrongAnswersTbody" class="divide-y divide-gray-200">
                             <!-- Rows injected here -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <button onclick="goToMenu()" class="w-full py-4 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-bold text-lg transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
+            <button onclick="goToMenu()" class="shrink-0 w-full py-3 sm:py-4 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-bold text-base sm:text-lg transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
                 กลับหน้าหลัก
             </button>
@@ -182,7 +198,7 @@
 
     <!-- ==================== MODALS ==================== -->
     <!-- Grid Modal -->
-    <div id="gridModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm" onclick="toggleGridModal(false)">
+    <div id="gridModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="toggleGridModal(false)">
         <div class="bg-white rounded-3xl w-full max-w-lg p-5 flex flex-col max-h-[80vh] shadow-2xl" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-gray-800">เลือกข้อที่ต้องการทำ</h3>
@@ -197,20 +213,20 @@
     </div>
 
     <!-- Confirm Submit Modal -->
-    <div id="confirmModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm" onclick="toggleConfirmModal(false)">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
+    <div id="confirmModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="toggleConfirmModal(false)">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
             <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-blue-600 ml-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </div>
-            <h3 class="text-2xl font-bold mb-2 text-gray-800">ยืนยันการส่งข้อสอบ?</h3>
-            <p id="confirmText" class="text-gray-500 mb-8 font-medium">
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-800">ยืนยันการส่งข้อสอบ?</h3>
+            <p id="confirmText" class="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8 font-medium">
                 คุณทำไปแล้ว 0 / 250 ข้อ
             </p>
             <div class="flex gap-3">
-                <button onclick="toggleConfirmModal(false)" class="flex-1 py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors">
+                <button onclick="toggleConfirmModal(false)" class="flex-1 py-3 sm:py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors text-sm sm:text-base">
                     ทำต่อ
                 </button>
-                <button onclick="confirmAndSubmit()" class="flex-1 py-3.5 bg-green-500 text-white font-bold rounded-2xl active:bg-green-600 shadow-md shadow-green-200 transition-all">
+                <button onclick="confirmAndSubmit()" class="flex-1 py-3 sm:py-3.5 bg-green-500 text-white font-bold rounded-2xl active:bg-green-600 shadow-md shadow-green-200 transition-all text-sm sm:text-base">
                     ส่งข้อสอบ
                 </button>
             </div>
