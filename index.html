@@ -41,7 +41,8 @@
 <body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
 
     <!-- ==================== MENU SCREEN ==================== -->
-    <div id="menuScreen" class="h-[100dvh] w-full flex flex-col items-center justify-start sm:justify-center p-4 app-scroll">
+    <div id="menuScreen" class="h-[100dvh] w-full flex flex-col items-center justify-start sm:justify-center p-4 app-scroll relative">
+        <button id="adminQuickBtn" onclick="openAdminLogin()" class="fixed top-3 right-3 z-40 px-3 py-2 bg-slate-800/95 hover:bg-slate-900 text-white rounded-xl font-bold text-xs shadow-lg transition-transform active:scale-95 pt-safe">Admin</button>
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md text-center my-2 sm:my-auto menu-card-scroll custom-scrollbar">
             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <!-- Clock Icon -->
@@ -160,20 +161,25 @@
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                 </button>
                 <div class="text-center font-bold text-lg md:text-xl">ผู้ใช้งาน</div>
-                <button id="logoutUserHeaderBtn" onclick="logoutCurrentUser()" class="px-3 py-2 bg-red-500 rounded-xl active:bg-red-700 transition-colors font-bold text-xs hidden" aria-label="ออกจากระบบ">
-                    ออก
+                <button id="adminLogoutHeaderBtn" onclick="logoutAdmin()" class="px-3 py-2 bg-amber-500 rounded-xl active:bg-amber-700 transition-colors font-bold text-xs hidden" aria-label="ออกจากระบบ Admin">
+                    ออก Admin
                 </button>
             </div>
 
-            <div class="px-5 py-2 bg-slate-50 border-b border-slate-100 text-slate-700 shrink-0 text-sm font-bold">
+            <div id="userScreenHint" class="px-5 py-2 bg-slate-50 border-b border-slate-100 text-slate-700 shrink-0 text-sm font-bold">
                 เลือกชื่อก่อนเล่น ระบบจะค้างบัญชีนี้ไว้จนกว่าจะออกจากระบบ
             </div>
 
-            <div class="p-4 bg-white border-b border-slate-100 shrink-0">
-                <div class="flex gap-2">
-                    <input id="newUserNameInput" type="text" maxlength="24" placeholder="เพิ่มชื่อผู้ใช้งาน" class="flex-1 px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 font-bold">
-                    <button onclick="addUserFromInput()" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-transform active:scale-95 shadow-sm">เพิ่ม</button>
+            <div id="adminUserPanel" class="p-4 bg-white border-b border-slate-100 shrink-0 hidden">
+                <div class="mb-2 text-left">
+                    <div class="text-sm font-black text-slate-800">เพิ่มผู้ใช้งาน</div>
+                    <div class="text-xs text-slate-400 font-bold">Admin กำหนดชื่อและรหัสผ่านให้ผู้ใช้งาน</div>
                 </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input id="newUserNameInput" type="text" maxlength="24" placeholder="ชื่อผู้ใช้งาน" class="px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 font-bold">
+                    <input id="newUserPasswordInput" type="text" maxlength="24" placeholder="รหัสผ่านผู้ใช้งาน" class="px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 font-bold">
+                </div>
+                <button onclick="addUserFromInput()" class="w-full mt-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-transform active:scale-95 shadow-sm">เพิ่มผู้ใช้งาน</button>
             </div>
 
             <div class="flex-1 overflow-y-auto p-3 sm:p-4 custom-scrollbar bg-slate-50">
@@ -436,6 +442,56 @@
                 <button onclick="confirmClearStats()" class="flex-1 py-3 sm:py-3.5 bg-red-500 text-white font-bold rounded-2xl active:bg-red-600 shadow-md shadow-red-200 transition-all text-sm sm:text-base">
                     ล้างค่า
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="closeAdminLoginModal()">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-slate-700" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path><path d="M9 12l2 2 4-4"></path></svg>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-gray-800">เข้าสู่ระบบ Admin</h3>
+            <p class="text-sm text-gray-500 mb-4 font-medium">กรอกรหัสผ่านสำหรับจัดการผู้ใช้งาน</p>
+            <input id="adminPasswordInput" type="password" inputmode="numeric" placeholder="รหัสผ่าน Admin" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 font-bold text-center mb-2">
+            <p id="adminLoginError" class="text-red-500 text-sm font-bold h-5 mb-2"></p>
+            <div class="flex gap-3">
+                <button onclick="closeAdminLoginModal()" class="flex-1 py-3 sm:py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors text-sm sm:text-base">ยกเลิก</button>
+                <button onclick="submitAdminLogin()" class="flex-1 py-3 sm:py-3.5 bg-slate-800 text-white font-bold rounded-2xl active:bg-slate-900 shadow-md shadow-slate-200 transition-all text-sm sm:text-base">เข้าสู่ระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Login Modal -->
+    <div id="userLoginModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="closeUserLoginModal()">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>
+            </div>
+            <h3 id="userLoginTitle" class="text-xl sm:text-2xl font-bold mb-2 text-gray-800">เข้าสู่ผู้ใช้งาน</h3>
+            <p class="text-sm text-gray-500 mb-4 font-medium">กรอกรหัสผ่านของผู้ใช้งาน</p>
+            <input id="userPasswordLoginInput" type="password" placeholder="รหัสผ่าน" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400 font-bold text-center mb-2">
+            <p id="userLoginError" class="text-red-500 text-sm font-bold h-5 mb-2"></p>
+            <div class="flex gap-3">
+                <button onclick="closeUserLoginModal()" class="flex-1 py-3 sm:py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors text-sm sm:text-base">ยกเลิก</button>
+                <button onclick="submitUserLogin()" class="flex-1 py-3 sm:py-3.5 bg-blue-600 text-white font-bold rounded-2xl active:bg-blue-700 shadow-md shadow-blue-200 transition-all text-sm sm:text-base">เข้าใช้</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set User Password Modal -->
+    <div id="setUserPasswordModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="closeSetUserPasswordModal()">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-sm text-center shadow-2xl" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-amber-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3 id="setUserPasswordTitle" class="text-xl sm:text-2xl font-bold mb-2 text-gray-800">ตั้งรหัสผ่าน</h3>
+            <p class="text-sm text-gray-500 mb-4 font-medium">เว้นว่างได้ หากไม่ต้องการใช้รหัสผ่าน</p>
+            <input id="setUserPasswordInput" type="text" maxlength="24" placeholder="รหัสผ่านใหม่" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold text-center mb-4">
+            <div class="flex gap-3">
+                <button onclick="closeSetUserPasswordModal()" class="flex-1 py-3 sm:py-3.5 bg-gray-100 text-gray-700 font-bold rounded-2xl active:bg-gray-200 transition-colors text-sm sm:text-base">ยกเลิก</button>
+                <button onclick="saveUserPasswordFromModal()" class="flex-1 py-3 sm:py-3.5 bg-amber-500 text-white font-bold rounded-2xl active:bg-amber-600 shadow-md shadow-amber-200 transition-all text-sm sm:text-base">บันทึก</button>
             </div>
         </div>
     </div>
