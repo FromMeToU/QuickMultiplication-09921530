@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -5,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ฝึกซ้อมสูตรคูณเร็ว</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
     <style>
         /* Custom Styles & Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -35,6 +40,18 @@
         }
         @media (min-width: 768px) {
             .menu-card-scroll { max-height: min(95dvh, calc(100dvh - 2rem)); }
+        }
+
+
+        /* Worksheet PDF export */
+        .pdf-export-hidden-source {
+            position: absolute;
+            left: -10000px;
+            top: 0;
+            width: 1123px;
+            background: #ffffff;
+            color: #000000;
+            z-index: -1;
         }
     </style>
 </head>
@@ -122,10 +139,10 @@
             <div class="mb-6">
                 <p class="text-sm text-gray-500 mb-2 font-medium text-left">เลือกรูปแบบแป้นพิมพ์:</p>
                 <div class="flex bg-gray-100 p-1.5 rounded-xl">
-                    <button id="btnStylePhone" onclick="setNumpadStyle('phone')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-blue-600 shadow-sm ring-1 ring-black/5">
+                    <button id="btnStylePhone" onclick="setNumpadStyle('phone')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-gray-700">
                         1-2-3 อยู่บน
                     </button>
-                    <button id="btnStyleCalc" onclick="setNumpadStyle('calculator')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-gray-700">
+                    <button id="btnStyleCalc" onclick="setNumpadStyle('calculator')" class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-blue-600 shadow-sm ring-1 ring-black/5">
                         7-8-9 อยู่บน
                     </button>
                 </div>
@@ -148,6 +165,10 @@
                 <button onclick="openStatsScreen()" class="w-full py-3.5 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 2 5-6"></path></svg>
                     คลังสถิติ
+                </button>
+                <button onclick="togglePdfExportModal(true)" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="M9 15l3 3 3-3"></path></svg>
+                    ส่งออก PDF แบบฝึก 5 ชุด
                 </button>
             </div>
         </div>
@@ -500,6 +521,53 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+
+
+    <!-- Worksheet PDF Export Modal -->
+    <div id="pdfExportModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm w-full" onclick="togglePdfExportModal(false)">
+        <div class="bg-white rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800">ส่งออกใบงาน PDF</h3>
+                    <p class="text-sm text-gray-500 font-medium">5 ชุด ชุดละ 50 ข้อ หน้าละชุด</p>
+                </div>
+                <button onclick="togglePdfExportModal(false)" class="text-gray-400 bg-gray-100 rounded-full p-2 hover:bg-gray-200 transition-colors" aria-label="ปิด">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block text-left">
+                    <span class="text-sm font-bold text-gray-600">หัวข้อบนกระดาษ</span>
+                    <input id="pdfTitleInput" type="text" value="ข้อสอบสูตรคูณเร็ว" class="mt-1 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold">
+                </label>
+
+                <label class="block text-left">
+                    <span class="text-sm font-bold text-gray-600">ระดับข้อสอบ</span>
+                    <select id="pdfLevelSelect" class="mt-1 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold">
+                        <option value="secondary" selected>ระดับมัธยมศึกษา</option>
+                        <option value="primary">ระดับประถมศึกษา</option>
+                    </select>
+                </label>
+
+                <label class="block text-left">
+                    <span class="text-sm font-bold text-gray-600">รหัสชุด/ชื่อชุด</span>
+                    <input id="pdfCodeInput" type="text" value="A" maxlength="12" class="mt-1 w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold">
+                </label>
+
+                <div class="bg-amber-50 border border-amber-100 rounded-2xl p-3 text-sm text-amber-800 font-bold leading-relaxed">
+                    ระบบจะสุ่มโจทย์ตามรูปแบบข้อสอบในแอป แล้วจัดหน้า A4 แนวนอนแบบตัวอย่าง มีช่องชื่อ ชั้น เลขที่ และช่องคะแนน
+                </div>
+
+                <button id="pdfExportBtn" onclick="exportWorksheetPdf()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    สร้าง PDF
+                </button>
+                <p id="pdfExportStatusText" class="text-center text-xs text-gray-400 font-bold min-h-[1rem]"></p>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== SCRIPT ==================== -->
     
