@@ -183,6 +183,10 @@
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 2 5-6"></path></svg>
                     คลังสถิติ
                 </button>
+                <button onclick="openTeacherMonitorScreen()" class="w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    ครูดูการซ้อมสด
+                </button>
                 <button onclick="togglePdfExportModal(true)" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="M9 15l3 3 3-3"></path></svg>
                     ส่งออก PDF แบบฝึก 5 ชุด
@@ -424,6 +428,49 @@
                 </div>
                 <p id="multiplayerStatusText" class="text-center text-xs text-gray-400 font-bold min-h-[1rem]"></p>
             </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== TEACHER MONITOR SCREEN ==================== -->
+    <div id="teacherMonitorScreen" class="h-[100dvh] w-full hidden bg-slate-50 items-center justify-center md:p-4">
+        <div class="w-full h-full md:h-[95vh] md:max-w-md bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-sky-600 text-white p-3 md:p-4 pt-safe flex justify-between items-center shrink-0 shadow-sm z-20">
+                <button onclick="goToMenu()" class="p-2 bg-sky-500 rounded-xl active:bg-sky-700 transition-colors" aria-label="กลับหน้าหลัก">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center font-bold text-lg md:text-xl">ครูดูการซ้อมสด</div>
+                <button onclick="clearInactiveLivePracticeSessions()" class="px-3 py-2 bg-sky-500 rounded-xl active:bg-sky-700 transition-colors font-bold text-xs">ล้างเก่า</button>
+            </div>
+            <div class="px-5 py-2 bg-sky-50 border-b border-sky-100 text-sky-800 shrink-0 text-xs sm:text-sm font-bold leading-relaxed">
+                ใช้มือถือครูเปิดหน้านี้เพื่อดูนักเรียนที่กำลังฝึกซ้อมจากเครื่องอื่นแบบสด ๆ
+            </div>
+            <div class="grid grid-cols-3 gap-2 p-4 pb-2 bg-slate-50 shrink-0">
+                <div class="bg-white rounded-2xl p-3 border border-sky-100 text-center shadow-sm">
+                    <div class="text-[11px] text-slate-400 font-black">กำลังซ้อม</div>
+                    <div id="monitorActiveCount" class="text-2xl font-black text-sky-700">0</div>
+                </div>
+                <div class="bg-white rounded-2xl p-3 border border-sky-100 text-center shadow-sm">
+                    <div class="text-[11px] text-slate-400 font-black">เพิ่งจบ</div>
+                    <div id="monitorFinishedCount" class="text-2xl font-black text-green-700">0</div>
+                </div>
+                <div class="bg-white rounded-2xl p-3 border border-sky-100 text-center shadow-sm">
+                    <div class="text-[11px] text-slate-400 font-black">ทั้งหมด</div>
+                    <div id="monitorTotalCount" class="text-2xl font-black text-slate-800">0</div>
+                </div>
+            </div>
+            <div class="px-4 pb-3 bg-slate-50 shrink-0">
+                <div class="flex gap-2">
+                    <button onclick="setMonitorFilter('active')" id="monitorFilterActiveBtn" class="flex-1 py-2 rounded-xl bg-sky-600 text-white font-black text-xs">กำลังซ้อม</button>
+                    <button onclick="setMonitorFilter('all')" id="monitorFilterAllBtn" class="flex-1 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 font-black text-xs">ทั้งหมด</button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 pt-0 custom-scrollbar bg-slate-50">
+                <div id="monitorList" class="space-y-3 pb-safe">
+                    <div class="text-center text-slate-400 font-bold py-10">กำลังเชื่อมต่อ...</div>
+                </div>
+            </div>
+            <div id="monitorStatusText" class="px-4 py-2 bg-white border-t border-slate-100 text-center text-xs text-slate-400 font-bold shrink-0">รอข้อมูลสด</div>
         </div>
     </div>
 
