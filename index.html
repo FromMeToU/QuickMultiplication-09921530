@@ -53,6 +53,37 @@
             color: #000000;
             z-index: -1;
         }
+
+        /* Teacher monitor fullscreen mode */
+        #teacherMonitorScreen.monitor-fullscreen {
+            padding: 0 !important;
+            align-items: stretch !important;
+            justify-content: stretch !important;
+            background: #f8fafc;
+        }
+        #teacherMonitorScreen.monitor-fullscreen > div {
+            max-width: none !important;
+            width: 100% !important;
+            height: 100dvh !important;
+            border-radius: 0 !important;
+        }
+        #teacherMonitorScreen.monitor-fullscreen #monitorList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1rem;
+            align-items: start;
+        }
+        #teacherMonitorScreen.monitor-fullscreen .monitor-card {
+            min-height: 210px;
+        }
+        #teacherMonitorScreen.monitor-fullscreen .monitor-card-name {
+            font-size: 1.45rem;
+            line-height: 1.9rem;
+        }
+        #teacherMonitorScreen.monitor-fullscreen .monitor-card-number {
+            font-size: 1.75rem;
+            line-height: 2rem;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
@@ -334,13 +365,26 @@
 
             <div class="px-5 py-2 bg-teal-50 border-b border-teal-100 text-teal-800 shrink-0 flex items-center justify-between text-sm font-bold">
                 <span>โหมดฝึกซ้อมอิสระ</span>
-                <span>100 คะแนน</span>
+                <span>เลือกได้หลายแม่ • 250 ข้อ</span>
             </div>
             <div class="px-5 py-2 bg-orange-50 border-b border-orange-100 text-orange-700 shrink-0 flex items-center justify-between gap-3 text-sm font-bold">
                 <span>เวลาต่อข้อ</span>
                 <label class="flex items-center gap-2">
                     <input id="freeQuestionTimeInput" type="number" min="1" max="99" inputmode="numeric" onchange="setFreeQuestionTimeFromInput(this.value)" oninput="setFreeQuestionTimeFromInput(this.value, true)" class="w-16 text-center bg-white border border-orange-200 rounded-lg py-1 font-black text-orange-700 outline-none focus:ring-2 focus:ring-orange-300">
                     <span>วินาที</span>
+                </label>
+            </div>
+            <div class="px-5 py-2 bg-blue-50 border-b border-blue-100 text-blue-800 shrink-0 flex items-start justify-between gap-3 text-sm font-bold">
+                <label class="flex items-start gap-3 cursor-pointer text-left">
+                    <input id="freeTotalTimerToggle" type="checkbox" onchange="setFreeTotalTimerMode(this.checked)" class="w-5 h-5 mt-0.5 accent-blue-600 rounded cursor-pointer">
+                    <span>
+                        <span class="block">จับเวลารวมทั้งชุด</span>
+                        <span class="block text-xs text-blue-600 font-medium leading-snug">เปิดแล้วจะนับถอยหลังทั้งชุด ไม่จับเวลาทีละข้อ</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-2 shrink-0">
+                    <input id="freeTotalMinutesInput" type="number" min="1" max="99" inputmode="numeric" onchange="setFreeTotalMinutesFromInput(this.value)" oninput="setFreeTotalMinutesFromInput(this.value, true)" class="w-16 text-center bg-white border border-blue-200 rounded-lg py-1 font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-300">
+                    <span>นาที</span>
                 </label>
             </div>
             <div class="px-5 py-2 bg-teal-50 border-b border-teal-100 text-teal-800 shrink-0 flex items-start justify-between gap-3 text-sm font-bold">
@@ -354,9 +398,17 @@
             </div>
 
             <div class="flex-1 overflow-y-auto p-3 sm:p-4 custom-scrollbar bg-slate-50">
-                <div id="freeTableGrid" class="grid grid-cols-3 gap-2 sm:gap-3 content-start pb-safe">
+                <div class="mb-3 grid grid-cols-2 gap-2">
+                    <button onclick="selectAllFreeTables()" class="py-2.5 rounded-2xl bg-white border border-teal-100 text-teal-700 font-black shadow-sm active:scale-95">เลือกทั้งหมด</button>
+                    <button onclick="clearFreeTables()" class="py-2.5 rounded-2xl bg-white border border-slate-100 text-slate-600 font-black shadow-sm active:scale-95">ล้างเลือก</button>
+                </div>
+                <div id="freeTableGrid" class="grid grid-cols-3 gap-2 sm:gap-3 content-start pb-28">
                     <!-- Dynamic table cards generated via JS -->
                 </div>
+            </div>
+            <div class="shrink-0 p-3 bg-white border-t border-teal-100 pb-safe shadow-[0_-10px_20px_-12px_rgba(0,0,0,0.15)]">
+                <div id="freeSelectionInfo" class="text-center text-xs font-black text-teal-700 mb-2">เลือกแล้ว 1 แม่ • ซ้อม 99 ข้อ</div>
+                <button onclick="startSelectedFreeTables()" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-black text-base shadow-md active:scale-95 transition-transform">เริ่มซ้อมสูตรคูณ</button>
             </div>
         </div>
     </div>
@@ -440,7 +492,10 @@
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                 </button>
                 <div class="text-center font-bold text-lg md:text-xl">ครูดูการซ้อมสด</div>
-                <button onclick="clearInactiveLivePracticeSessions()" class="px-3 py-2 bg-sky-500 rounded-xl active:bg-sky-700 transition-colors font-bold text-xs">ล้างเก่า</button>
+                <div class="flex items-center gap-2">
+                    <button id="monitorFullscreenBtn" onclick="toggleTeacherMonitorFullscreen()" class="px-3 py-2 bg-sky-500 rounded-xl active:bg-sky-700 transition-colors font-bold text-xs">เต็มจอ</button>
+                    <button onclick="clearInactiveLivePracticeSessions()" class="px-3 py-2 bg-sky-500 rounded-xl active:bg-sky-700 transition-colors font-bold text-xs">ล้างเก่า</button>
+                </div>
             </div>
             <div class="px-5 py-2 bg-sky-50 border-b border-sky-100 text-sky-800 shrink-0 text-xs sm:text-sm font-bold leading-relaxed">
                 ใช้มือถือครูเปิดหน้านี้เพื่อดูนักเรียนที่กำลังฝึกซ้อมจากเครื่องอื่นแบบสด ๆ
