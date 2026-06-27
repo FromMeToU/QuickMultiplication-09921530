@@ -132,6 +132,45 @@
                 gap: 0.5rem;
             }
         }
+
+
+        /* Math Tricks-like fast keypad layout */
+        #playCard { transition: none; }
+        #questionArea { min-height: 0; }
+        #numpadShell { width: 100%; }
+        #numpadContainer button {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: transform 0.035s ease, background-color 0.035s ease, box-shadow 0.035s ease !important;
+            will-change: transform;
+        }
+        #numpadContainer button:active { transform: scale(0.985); }
+        @media (orientation: portrait) {
+            #playCard { max-width: none !important; width: 100% !important; height: 100dvh !important; border-radius: 0 !important; }
+            #questionArea { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+            #numpadShell { max-width: min(94vw, 720px) !important; }
+            #numpadContainer { gap: clamp(0.55rem, 1.8vw, 0.95rem) !important; grid-auto-rows: clamp(4.8rem, 10.5vh, 7.2rem) !important; }
+            #numpadContainer button { font-size: clamp(2rem, 6.5vw, 3.8rem) !important; border-radius: 1.25rem !important; font-weight: 500 !important; }
+            #numpadContainer button svg { width: clamp(2rem, 7vw, 3.4rem) !important; height: clamp(2rem, 7vw, 3.4rem) !important; }
+        }
+        @media (orientation: landscape) {
+            #playingScreen { padding: 0.25rem !important; }
+            #playCard { max-width: none !important; width: 100% !important; height: 100dvh !important; border-radius: 0 !important; }
+            #questionArea { flex: 1 1 auto; padding: 0.75rem 1rem !important; }
+            #numpadShell { max-width: min(72vw, 780px) !important; }
+            #numpadContainer { gap: clamp(0.45rem, 1.1vw, 0.8rem) !important; grid-auto-rows: clamp(3.4rem, 10vh, 5.5rem) !important; }
+            #numpadContainer button { font-size: clamp(1.8rem, 3.6vw, 3.2rem) !important; border-radius: 0.9rem !important; font-weight: 500 !important; }
+            #numpadContainer button svg { width: clamp(1.8rem, 3.8vw, 3rem) !important; height: clamp(1.8rem, 3.8vw, 3rem) !important; }
+        }
+        @media (orientation: landscape) and (max-height: 520px) {
+            #navControls { display: none !important; }
+            #questionText { font-size: clamp(2.6rem, 6.5vh, 4.4rem) !important; }
+            #answerText { font-size: clamp(2.6rem, 6.5vh, 4.4rem) !important; }
+        }
+        .free-range-chip { touch-action: manipulation; }
+
     </style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
@@ -277,7 +316,7 @@
 
     <!-- ==================== TRAINING PLAN SCREEN ==================== -->
     <div id="trainingPlanScreen" class="h-[100dvh] w-full hidden bg-slate-50 items-center justify-center md:p-4">
-        <div class="w-full h-full md:h-[95vh] md:max-w-md bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+        <div id="playCard" class="w-full h-full md:h-[95vh] md:max-w-md bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
             <div class="bg-emerald-600 text-white p-3 md:p-4 pt-safe flex justify-between items-center shrink-0 shadow-sm z-20">
                 <button onclick="goToMenu()" class="p-2 bg-emerald-500 rounded-xl active:bg-emerald-700 transition-colors" aria-label="กลับหน้าหลัก">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
@@ -452,6 +491,10 @@
                     <button onclick="selectAllFreeTables()" class="py-2.5 rounded-2xl bg-white border border-teal-100 text-teal-700 font-black shadow-sm active:scale-95">เลือกทั้งหมด</button>
                     <button onclick="clearFreeTables()" class="py-2.5 rounded-2xl bg-white border border-slate-100 text-slate-600 font-black shadow-sm active:scale-95">ล้างเลือก</button>
                 </div>
+
+                <!-- ช่วงย่อยจะเปิดเมื่อแตะเข้าไปในแม่สูตรคูณแต่ละแม่ -->
+                <div id="freeRangePanel" class="hidden"></div>
+
                 <div id="freeTableGrid" class="grid grid-cols-3 gap-2 sm:gap-3 content-start pb-28">
                     <!-- Dynamic table cards generated via JS -->
                 </div>
@@ -652,7 +695,7 @@
             </div>
 
             <!-- Question Area (Flexible) -->
-            <div class="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 bg-white min-h-[100px] relative overflow-hidden">
+            <div id="questionArea" class="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 bg-white min-h-[100px] relative overflow-hidden">
                 <div class="flex flex-row items-center justify-center w-full">
                     <div id="questionText" class="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-800 tracking-tighter whitespace-nowrap">
                         <!-- Dynamic Question -->
@@ -672,7 +715,7 @@
 
             <!-- Controls & Numpad Area -->
             <div class="bg-slate-100 p-2 md:p-3 pb-safe shrink-0 rounded-t-3xl border-t border-gray-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.08)] relative z-10 w-full">
-                <div class="w-full max-w-[340px] mx-auto flex flex-col pb-1 md:pb-2">
+                <div id="numpadShell" class="w-full max-w-[340px] mx-auto flex flex-col pb-1 md:pb-2">
                     
                     <!-- Prev / Next Controls Above Numpad -->
                     <div id="navControls" class="grid grid-cols-2 gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
