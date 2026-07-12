@@ -473,18 +473,43 @@
                     <button id="btnModeExam" onclick="setPlayMode('exam')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm ring-2 ring-blue-600 flex items-center justify-between">
                         <span class="flex flex-col items-start">
                             <span>โหมดแข่งขัน (เสมือนจริง)</span>
-                            <span class="text-xs font-normal text-gray-500 mt-0.5">พิมพ์แล้วกด Enter / ตรวจคะแนนตอนจบ</span>
+                            <span id="examModeDetail" class="text-xs font-normal text-gray-500 mt-0.5">250 ข้อ • 30 นาที • ชุดละ 50 ข้อ</span>
                         </span>
                         <svg id="iconModeExam" class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </button>
                     <button id="btnModeTraining" onclick="setPlayMode('training')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 flex items-center justify-between">
                         <span class="flex flex-col items-start">
                             <span>โหมดฝึกซ้อม</span>
-                            <span class="text-xs font-normal text-gray-400 mt-0.5">พิมพ์ถูกเปลี่ยนข้ออัตโนมัติทันที</span>
+                            <span id="trainingModeDetail" class="text-xs font-normal text-gray-400 mt-0.5">250 ข้อ • ชุดละ 50 ข้อ • พิมพ์ถูกเปลี่ยนข้ออัตโนมัติ</span>
                         </span>
                         <svg id="iconModeTraining" class="w-5 h-5 text-blue-600 hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </button>
                 </div>
+            </div>
+
+            <!-- Game Size Selector -->
+            <div id="gameSizeSelector" class="mb-4">
+                <p class="text-sm text-gray-500 mb-2 font-medium text-left">เลือกจำนวนข้อ/เวลา:</p>
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 bg-gray-100 p-1.5 rounded-xl">
+                    <button id="btnSizeHalf" onclick="setGameSizeFraction(0.5)" class="py-2 rounded-lg text-xs font-black transition-all">1/10<br><span class="text-[10px] font-bold">25</span></button>
+                    <button id="btnSize1" onclick="setGameSizeFraction(1)" class="py-2 rounded-lg text-xs font-black transition-all">1/5<br><span class="text-[10px] font-bold">50</span></button>
+                    <button id="btnSize2" onclick="setGameSizeFraction(2)" class="py-2 rounded-lg text-xs font-black transition-all">2/5<br><span class="text-[10px] font-bold">100</span></button>
+                    <button id="btnSize3" onclick="setGameSizeFraction(3)" class="py-2 rounded-lg text-xs font-black transition-all">3/5<br><span class="text-[10px] font-bold">150</span></button>
+                    <button id="btnSize4" onclick="setGameSizeFraction(4)" class="py-2 rounded-lg text-xs font-black transition-all">4/5<br><span class="text-[10px] font-bold">200</span></button>
+                    <button id="btnSize5" onclick="setGameSizeFraction(5)" class="py-2 rounded-lg text-xs font-black transition-all">5/5<br><span class="text-[10px] font-bold">250</span></button>
+                </div>
+                <p id="gameSizeHint" class="text-[11px] text-gray-400 font-bold mt-1.5 text-left">5/5 = 250 ข้อ ชุดละ 50 ข้อ เวลา 30 นาที</p>
+            </div>
+
+            <!-- Exam Repeat Mode Toggle -->
+            <div id="examRepeatTogglePanel" class="mb-4 bg-red-50 p-3 rounded-xl border border-red-100 hidden">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="examRepeatModeToggle" onchange="setRepeatMode(this.checked)" class="w-5 h-5 mt-0.5 accent-red-600 rounded cursor-pointer">
+                    <div class="flex flex-col text-left">
+                        <span class="text-sm font-bold text-red-700">เปิดโหมดวนซ้ำข้อผิด</span>
+                        <span class="text-xs font-medium text-red-500 leading-snug mt-0.5">ข้อที่ตอบผิดจะถูกนำไปต่อท้าย หลังข้อสุดท้าย และต้องเล่นจนกว่าจะถูกครบ</span>
+                    </div>
+                </label>
             </div>
 
             <!-- Per Question Timer Toggle -->
