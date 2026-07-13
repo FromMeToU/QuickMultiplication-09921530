@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -484,6 +485,13 @@
                         </span>
                         <svg id="iconModeTraining" class="w-5 h-5 text-blue-600 hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </button>
+                    <button id="btnModeLadder" onclick="setPlayMode('ladder')" class="py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 flex items-center justify-between">
+                        <span class="flex flex-col items-start">
+                            <span>โหมดไต่ระดับ 250</span>
+                            <span id="ladderModeDetail" class="text-xs font-normal text-gray-400 mt-0.5">ผ่านด่านด้วยการถูกหมด แล้วสะสมโจทย์เพิ่มจนถึง 250 ข้อ</span>
+                        </span>
+                        <svg id="iconModeLadder" class="w-5 h-5 text-blue-600 hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
                 </div>
             </div>
 
@@ -715,6 +723,13 @@
                     <input id="newUserPasswordInput" type="text" maxlength="24" placeholder="รหัสผ่านผู้ใช้งาน" class="px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 font-bold">
                 </div>
                 <button onclick="addUserFromInput()" class="w-full mt-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-transform active:scale-95 shadow-sm">เพิ่มผู้ใช้งาน</button>
+                <div id="adminMenuVisibilityPanel" class="mt-4 pt-4 border-t border-slate-100">
+                    <div class="mb-2 text-left">
+                        <div class="text-sm font-black text-slate-800">ซ่อน/แสดงเมนูหน้าหลัก</div>
+                        <div class="text-xs text-slate-400 font-bold">ใช้สำหรับจัดหน้าแอปให้นักเรียนเห็นเฉพาะเมนูที่ต้องการ</div>
+                    </div>
+                    <div id="adminMenuVisibilityList" class="grid grid-cols-1 gap-2"></div>
+                </div>
             </div>
 
             <div class="flex-1 overflow-y-auto p-3 sm:p-4 custom-scrollbar bg-slate-50">
