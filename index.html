@@ -430,6 +430,30 @@
         }
 
     
+
+        /* Result screen: three clear tabs (summary / errors / question times) */
+        #resultTabsContainer { position: relative; z-index: 2; }
+        #resultSummaryPanel {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 1px;
+        }
+        #resultCard.result-tab-errors #resultSummaryPanel,
+        #resultCard.result-tab-times #resultSummaryPanel { display: none !important; }
+        #resultCard.result-tab-summary #wrongAnswersContainer,
+        #resultCard.result-tab-summary #repeatAnswersContainer,
+        #resultCard.result-tab-summary #questionTimesContainer,
+        #resultCard.result-tab-summary #resultErrorsEmptyState { display: none !important; }
+        #resultErrorsEmptyState { min-height: 180px; }
+        @media (max-width: 640px) {
+            #resultTabsContainer { margin-bottom: .45rem !important; gap: .35rem !important; }
+            #resultTabsContainer button { padding: .62rem .2rem !important; font-size: .72rem !important; line-height: 1.15 !important; }
+            #resultSummaryPanel { padding-bottom: .2rem; }
+            #resultErrorsEmptyState { min-height: 0; }
+        }
+
         /* Fix result time-tab table visibility on mobile */
         #questionTimesContainer {
             min-height: 260px !important;
@@ -1696,8 +1720,14 @@
 
     <!-- ==================== RESULT SCREEN ==================== -->
     <div id="resultScreen" class="h-[100dvh] hidden w-full flex-col items-center justify-center p-3 sm:p-4 pt-safe pb-safe bg-slate-50">
-        <div id="resultCard" class="bg-white p-4 sm:p-8 rounded-3xl shadow-xl w-full max-w-full sm:max-w-2xl flex flex-col max-h-full overflow-hidden">
-            
+        <div id="resultCard" class="bg-white p-4 sm:p-8 rounded-3xl shadow-xl w-full max-w-full sm:max-w-2xl flex flex-col max-h-full overflow-hidden result-tab-summary">
+            <div id="resultTabsContainer" class="mb-3 sm:mb-4 grid grid-cols-3 gap-2 w-full shrink-0">
+                <button id="resultTabSummaryBtn" onclick="setResultTab('summary')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-blue-600 text-white shadow-sm">สรุปผล</button>
+                <button id="resultTabErrorsBtn" onclick="setResultTab('errors')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-white text-slate-600 border border-slate-200">ข้อผิด/ไม่ทัน (0)</button>
+                <button id="resultTabTimesBtn" onclick="setResultTab('times')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-white text-slate-600 border border-slate-200">เวลาต่อข้อ</button>
+            </div>
+
+            <div id="resultSummaryPanel" class="flex flex-col flex-1 min-h-0 overflow-auto custom-scrollbar">
             <div id="resultHeader" class="text-center mb-3 sm:mb-6 shrink-0">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-4">
                     <svg class="w-8 h-8 sm:w-10 sm:h-10 text-green-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -1713,6 +1743,8 @@
                 <div id="scoreDetailsContainer">
                     <!-- Dynamic Score Details -->
                 </div>
+            </div>
+            <div id="resultReplayContainer" class="mb-4 sm:mb-5 w-full shrink-0 hidden"></div>
             </div>
 
             <div id="wrongAnswersContainer" class="mb-4 sm:mb-6 hidden flex-col flex-1 min-h-0 w-full">
@@ -1737,6 +1769,10 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div id="resultErrorsEmptyState" class="hidden flex-1 min-h-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-center mb-4">
+                <div><div class="text-4xl mb-2">✓</div><div class="font-black text-emerald-700">ไม่มีข้อผิดหรือไม่ทัน</div><div class="text-sm font-bold text-emerald-600 mt-1">รอบนี้ตอบครบทุกข้อ</div></div>
             </div>
 
             <button id="resultPrimaryExitButton" onclick="goToMenu()" class="shrink-0 w-full py-3 sm:py-4 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-bold text-base sm:text-lg transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
