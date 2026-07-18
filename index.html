@@ -898,6 +898,17 @@
         .coach-metric { background:#fff; border:1px solid #d1fae5; border-radius:1.1rem; padding:.8rem; text-align:center; }
         .coach-task { background:#fff; border:1px solid #e2e8f0; border-radius:1.2rem; padding:.9rem; box-shadow:0 5px 15px rgba(15,23,42,.04); }
         .coach-task:active { transform:scale(.99); }
+        .skill12-card { background:#fff; border:1px solid #e2e8f0; border-radius:1.25rem; padding:.85rem; text-align:left; box-shadow:0 5px 14px rgba(15,23,42,.04); transition:transform .12s ease,border-color .12s ease; }
+        .skill12-card:active { transform:scale(.985); }
+        .skill12-card[data-sig="2-2"] { border-left:5px solid #0ea5e9; }
+        .skill12-card[data-sig="3-2"] { border-left:5px solid #f59e0b; }
+        .skill12-card[data-sig="2-3"] { border-left:5px solid #8b5cf6; }
+        .skill12-card[data-sig="3-3"] { border-left:5px solid #ef4444; }
+        .skill12-filter.active { background:#0f766e; color:white; border-color:#0f766e; }
+        .skill12-choice.active { background:#0d9488; color:white; border-color:#0d9488; }
+        #skill12Screen .skill12-scroll { overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+        #skill12DetailModal .skill12-modal-card { max-height:min(90dvh,780px); }
+
         .mp-mode-card { border:2px solid #e2e8f0; background:#fff; border-radius:1rem; padding:.8rem; text-align:left; transition:.15s ease; }
         .mp-mode-card.active { border-color:#7c3aed; background:#f5f3ff; box-shadow:0 0 0 2px rgba(124,58,237,.08); }
         .side-red { background:#fff1f2 !important; }
@@ -1157,7 +1168,9 @@
                         <button onclick="startTrainingPlanDrill('hardSpeed')" class="coach-task"><div class="text-2xl">🔥</div><div class="font-black text-slate-800 text-sm">สปีดเลข 2 หลัก</div><div class="text-[11px] font-bold text-slate-400">ชุดยาก</div></button>
                         <button onclick="startTrainingPlanDrill('slow20')" class="coach-task"><div class="text-2xl">⏱️</div><div class="font-black text-slate-800 text-sm">ข้อช้าสุด 20%</div><div class="text-[11px] font-bold text-slate-400">แก้คอขวดเวลา</div></button>
                         <button onclick="startTrainingPlanDrill('weakTables')" class="coach-task"><div class="text-2xl">🧠</div><div class="font-black text-slate-800 text-sm">แม่อ่อนอัตโนมัติ</div><div class="text-[11px] font-bold text-slate-400">จากสถิติจริง</div></button>
+                        <button onclick="openSpeedTrickScreen()" class="coach-task border-2 border-amber-200 bg-amber-50"><div class="text-2xl">🧮</div><div class="font-black text-amber-900 text-sm">ทริคคูณลัด</div><div class="text-[11px] font-bold text-amber-700">เรียนวิธีคิดแล้วฝึกทันที</div></button>
                         <button onclick="startTrainingPlanDrill('fullMock')" class="coach-task"><div class="text-2xl">🏁</div><div class="font-black text-slate-800 text-sm">จำลองแข่งเต็ม</div><div class="text-[11px] font-bold text-slate-400">250 ข้อ</div></button>
+                        <button onclick="openSkill12Screen()" class="coach-task col-span-2 border-2 border-teal-200 bg-teal-50"><div class="text-2xl">🧩</div><div class="font-black text-teal-800 text-sm">ระบบฝึก 12 กลุ่ม</div><div class="text-[11px] font-bold text-teal-600">วิเคราะห์รูปแบบผลคูณย่อยทั้งสองด้าน</div></button>
                     </div>
                 </section>
 
@@ -1170,6 +1183,134 @@
                         <div>• ทำเต็ม 250 ข้อใช้เพื่อวัดผล ไม่ใช้แทนการแก้จุดอ่อน</div>
                     </div>
                 </section>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 12 STRUCTURAL GROUPS TRAINING ==================== -->
+
+    <!-- ==================== SPEED MULTIPLICATION TRICKS SCREEN ==================== -->
+    <div id="speedTrickScreen" class="h-[100dvh] w-full hidden bg-amber-50 items-center justify-center md:p-4">
+        <div class="w-full h-full md:h-[95vh] md:max-w-2xl bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-amber-500 text-white p-3 md:p-4 pt-safe flex justify-between items-center shrink-0 shadow-sm z-20">
+                <button onclick="returnToTrainingCoachFromSpeedTricks()" class="p-2 bg-amber-400 rounded-xl active:bg-amber-600" aria-label="กลับโค้ช">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center"><div class="font-black text-base md:text-lg">ทริคคูณลัด</div><div class="text-[10px] font-bold text-amber-100">เลือกวิธีคิดให้เหมาะกับรูปแบบโจทย์</div></div>
+                <button onclick="renderSpeedTrickScreen()" class="px-3 py-2 bg-amber-400 rounded-xl active:bg-amber-600 font-bold text-xs">วิเคราะห์ใหม่</button>
+            </div>
+            <div class="px-4 py-3 bg-amber-50 border-b border-amber-100 shrink-0">
+                <div id="speedTrickRecommendation" class="rounded-2xl bg-white border border-amber-200 p-3 text-left text-xs font-bold text-slate-600 leading-relaxed"></div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 bg-slate-50 pb-safe">
+                <div id="speedTrickGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="speedTrickDetailModal" class="fixed inset-0 z-[95] hidden items-center justify-center bg-black/55 p-4">
+        <div class="w-full max-w-lg max-h-[88dvh] bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col">
+            <div class="bg-amber-500 text-white px-5 py-4 flex items-center justify-between shrink-0">
+                <div><div id="speedTrickDetailTitle" class="font-black text-lg"></div><div id="speedTrickDetailShort" class="text-xs font-bold text-amber-100"></div></div>
+                <button onclick="closeSpeedTrickDetail()" class="w-10 h-10 rounded-xl bg-amber-400 font-black text-xl">×</button>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4 text-left">
+                <div class="rounded-2xl bg-amber-50 border border-amber-100 p-4">
+                    <div class="text-xs font-black text-amber-700 mb-1">หลักคิด</div>
+                    <div id="speedTrickDetailRule" class="font-black text-slate-800 leading-relaxed"></div>
+                </div>
+                <div>
+                    <div class="text-xs font-black text-slate-500 mb-2">ตัวอย่างทีละขั้น</div>
+                    <div id="speedTrickDetailExamples" class="space-y-2"></div>
+                </div>
+                <div id="speedTrickDetailCaution" class="rounded-2xl bg-blue-50 border border-blue-100 p-3 text-xs font-bold text-blue-800 leading-relaxed"></div>
+            </div>
+            <div class="p-4 border-t bg-white grid grid-cols-2 gap-2 shrink-0">
+                <button id="speedTrickPractice25" class="py-3 rounded-2xl bg-amber-500 text-white font-black active:scale-95">ฝึก 25 ข้อ</button>
+                <button id="speedTrickPractice50" class="py-3 rounded-2xl bg-slate-800 text-white font-black active:scale-95">ฝึก 50 ข้อ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="skill12Screen" class="h-[100dvh] w-full hidden bg-slate-50 items-center justify-center md:p-4">
+        <div class="w-full h-full md:h-[95vh] md:max-w-2xl bg-white md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-teal-700 text-white p-3 md:p-4 pt-safe flex justify-between items-center shrink-0 shadow-sm z-20">
+                <button onclick="returnToTrainingCoachFromSkill12()" class="p-2 bg-teal-600 rounded-xl active:bg-teal-800" aria-label="กลับโค้ช">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center"><div class="font-black text-base md:text-lg">ระบบฝึก 12 กลุ่ม</div><div class="text-[10px] font-bold text-teal-100">จำแนกจากผลคูณหลักสิบ–หลักหน่วยทั้งสองด้าน</div></div>
+                <button onclick="openStatsScreen()" class="px-3 py-2 bg-teal-600 rounded-xl active:bg-teal-800 font-bold text-xs">สถิติ</button>
+            </div>
+            <div class="skill12-scroll flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-slate-50 p-3 md:p-4 space-y-3 pb-safe">
+                <section class="rounded-3xl bg-gradient-to-br from-teal-700 to-emerald-600 text-white p-4 shadow-sm">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="text-left"><div class="text-[11px] font-black text-teal-100">คลังโจทย์จริง</div><div class="text-2xl font-black">972 โจทย์ • 12 กลุ่ม</div><div class="text-xs font-bold text-teal-100 mt-1">ตัวตั้ง 13–25 ไม่ใช้ 20 • ตัวคูณ 11–99 ไม่ลงท้าย 0</div></div>
+                        <div id="skill12MasteredBadge" class="shrink-0 px-3 py-2 rounded-2xl bg-white/15 text-center"><div class="text-[10px] font-black">ชำนาญแล้ว</div><div class="text-xl font-black">0/12</div></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button onclick="startSkill12Diagnostic()" class="py-3 px-2 rounded-2xl bg-white text-teal-800 font-black text-xs active:scale-[.98]">ตรวจวัด 12 กลุ่ม • 120 ข้อ</button>
+                        <button onclick="startSkill12WeakMix()" class="py-3 px-2 rounded-2xl bg-slate-900 text-white font-black text-xs active:scale-[.98]">ผสม 3 กลุ่มอ่อน • 60 ข้อ</button>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-3xl p-3 border border-slate-100 shadow-sm">
+                    <div class="text-left mb-2"><div class="font-black text-slate-800">เลือกหมวด</div><div class="text-[11px] font-bold text-slate-400">แตะกลุ่มเพื่อกำหนดจำนวนข้อและรูปแบบฝึก</div></div>
+                    <div class="grid grid-cols-5 gap-1.5">
+                        <button id="skill12FilterAll" onclick="setSkill12Filter('all')" class="skill12-filter active py-2 rounded-xl border border-slate-200 font-black text-[11px]">ทั้งหมด</button>
+                        <button id="skill12Filter22" onclick="setSkill12Filter('2-2')" class="skill12-filter py-2 rounded-xl border border-slate-200 font-black text-[11px]">2–2</button>
+                        <button id="skill12Filter32" onclick="setSkill12Filter('3-2')" class="skill12-filter py-2 rounded-xl border border-slate-200 font-black text-[11px]">3–2</button>
+                        <button id="skill12Filter23" onclick="setSkill12Filter('2-3')" class="skill12-filter py-2 rounded-xl border border-slate-200 font-black text-[11px]">2–3</button>
+                        <button id="skill12Filter33" onclick="setSkill12Filter('3-3')" class="skill12-filter py-2 rounded-xl border border-slate-200 font-black text-[11px]">3–3</button>
+                    </div>
+                </section>
+
+                <div id="skill12GroupGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+
+                <section class="rounded-3xl bg-slate-900 text-white p-4 text-left">
+                    <div class="font-black">เกณฑ์ความชำนาญ</div>
+                    <div class="mt-2 grid grid-cols-3 gap-2 text-center text-[10px] font-black">
+                        <div class="rounded-xl bg-white/10 p-2">★<br><span class="text-slate-300">ถูก ≥90%</span></div>
+                        <div class="rounded-xl bg-white/10 p-2">★★<br><span class="text-slate-300">ถูก ≥98%</span></div>
+                        <div class="rounded-xl bg-white/10 p-2">★★★<br><span class="text-slate-300">ถูก 100%<br>เฉลี่ย ≤4 วิ</span></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="skill12DetailModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/55 p-3">
+        <div class="skill12-modal-card w-full max-w-md bg-white rounded-[2rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-teal-700 text-white p-4 flex items-center justify-between shrink-0">
+                <div class="text-left min-w-0"><div id="skill12DetailTitle" class="font-black text-lg truncate">กลุ่ม</div><div id="skill12DetailSubtitle" class="text-xs font-bold text-teal-100"></div></div>
+                <button onclick="closeSkill12Detail()" class="w-10 h-10 rounded-xl bg-teal-600 font-black text-xl">×</button>
+            </div>
+            <div class="overflow-y-auto custom-scrollbar p-4 space-y-4">
+                <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 text-left">
+                    <div id="skill12DetailDescription" class="text-xs font-bold text-slate-600 leading-relaxed"></div>
+                    <div id="skill12DetailExample" class="mt-2 text-xl font-black text-slate-800"></div>
+                </div>
+                <div>
+                    <div class="text-left text-xs font-black text-slate-700 mb-2">จำนวนข้อ</div>
+                    <div id="skill12CountChoices" class="grid grid-cols-3 gap-2"></div>
+                </div>
+                <div>
+                    <div class="text-left text-xs font-black text-slate-700 mb-2">รูปแบบการเล่น</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="skill12ModeTraining" onclick="setSkill12Mode('training')" class="skill12-choice active py-3 rounded-xl border border-teal-200 font-black text-sm">ฝึกซ้อม</button>
+                        <button id="skill12ModeExam" onclick="setSkill12Mode('exam')" class="skill12-choice py-3 rounded-xl border border-slate-200 font-black text-sm">แข่งขันจริง</button>
+                    </div>
+                    <div id="skill12ModeHint" class="text-[11px] font-bold text-slate-400 mt-1.5 text-left">พิมพ์ถูกเปลี่ยนข้ออัตโนมัติ</div>
+                </div>
+                <div id="skill12TrainingOptions" class="rounded-2xl bg-amber-50 border border-amber-100 p-3 space-y-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="text-left"><div class="font-black text-amber-800 text-sm">จับเวลาต่อข้อ</div><div class="text-[10px] font-bold text-amber-600">ข้อไม่ทันจะไปท้ายคิวเมื่อเปิดวนซ้ำ</div></div>
+                        <label class="flex items-center gap-2"><input id="skill12PerTimerCheck" type="checkbox" checked onchange="syncSkill12DetailControls()" class="w-5 h-5 accent-amber-600"><span class="font-black text-xs">เปิด</span></label>
+                    </div>
+                    <div class="flex items-center gap-2"><input id="skill12SecondsInput" type="number" min="1" max="60" value="5" class="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white font-black text-center"><span class="font-black text-amber-800 text-xs">วินาที/ข้อ</span></div>
+                    <label id="skill12RepeatRow" class="flex items-center justify-between gap-3"><span class="font-black text-slate-700 text-sm">วนซ้ำข้อไม่ทันจนถูกครบ</span><input id="skill12RepeatCheck" type="checkbox" checked class="w-5 h-5 accent-teal-600"></label>
+                </div>
+                <button onclick="startSelectedSkill12Group()" class="w-full py-4 rounded-2xl bg-teal-600 text-white font-black text-lg shadow-md active:scale-[.98]">เริ่มฝึกกลุ่มนี้</button>
             </div>
         </div>
     </div>
@@ -1568,6 +1709,7 @@
             <div id="resultScoreBox" class="bg-blue-50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 text-center border border-blue-100 shadow-inner w-full shrink-0">
                 <div class="text-xs sm:text-sm text-blue-600 font-bold mb-1 tracking-wide">คะแนนที่ได้</div>
                 <div id="finalScoreText" class="text-5xl sm:text-6xl font-black text-blue-700 mb-2 sm:mb-3 drop-shadow-sm">0</div>
+                <div id="resultProjection250" class="hidden mb-3 rounded-2xl border p-3 text-left"></div>
                 <div id="scoreDetailsContainer">
                     <!-- Dynamic Score Details -->
                 </div>
