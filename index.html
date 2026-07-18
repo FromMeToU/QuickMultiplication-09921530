@@ -1191,6 +1191,7 @@
                         <button onclick="startTrainingPlanDrill('basicSpeed')" class="coach-task"><div class="text-2xl">⚡</div><div class="font-black text-slate-800 text-sm">สปีดชุดพื้นฐาน</div><div class="text-[11px] font-bold text-slate-400">ชุด 1–2/3</div></button>
                         <button onclick="startTrainingPlanDrill('hardSpeed')" class="coach-task"><div class="text-2xl">🔥</div><div class="font-black text-slate-800 text-sm">สปีดเลข 2 หลัก</div><div class="text-[11px] font-bold text-slate-400">ชุดยาก</div></button>
                         <button onclick="startTrainingPlanDrill('slow20')" class="coach-task"><div class="text-2xl">⏱️</div><div class="font-black text-slate-800 text-sm">ข้อช้าสุด 20%</div><div class="text-[11px] font-bold text-slate-400">แก้คอขวดเวลา</div></button>
+                        <button onclick="startTrainingPlanDrill('slow10')" class="coach-task"><div class="text-2xl">🐢</div><div class="font-black text-slate-800 text-sm">ข้อช้าเกิน 10 วิ</div><div id="coachSlow10Count" class="text-[11px] font-bold text-slate-400">สะสมจากทุกครั้งที่เล่น</div></button>
                         <button onclick="startTrainingPlanDrill('weakTables')" class="coach-task"><div class="text-2xl">🧠</div><div class="font-black text-slate-800 text-sm">แม่อ่อนอัตโนมัติ</div><div class="text-[11px] font-bold text-slate-400">จากสถิติจริง</div></button>
                         <button onclick="openSpeedTrickScreen()" class="coach-task border-2 border-amber-200 bg-amber-50"><div class="text-2xl">🧮</div><div class="font-black text-amber-900 text-sm">ทริคคูณลัด</div><div class="text-[11px] font-bold text-amber-700">เรียนวิธีคิดแล้วฝึกทันที</div></button>
                         <button onclick="startTrainingPlanDrill('fullMock')" class="coach-task"><div class="text-2xl">🏁</div><div class="font-black text-slate-800 text-sm">จำลองแข่งเต็ม</div><div class="text-[11px] font-bold text-slate-400">250 ข้อ</div></button>
@@ -1275,6 +1276,7 @@
                     <div class="grid grid-cols-2 gap-2 mt-4">
                         <button onclick="startSkill12Diagnostic()" class="py-3 px-2 rounded-2xl bg-white text-teal-800 font-black text-xs active:scale-[.98]">ตรวจวัด 12 กลุ่ม • 120 ข้อ</button>
                         <button onclick="startSkill12WeakMix()" class="py-3 px-2 rounded-2xl bg-slate-900 text-white font-black text-xs active:scale-[.98]">ผสม 3 กลุ่มอ่อน • 60 ข้อ</button>
+                        <button onclick="openSkill12MultiSelect()" class="col-span-2 py-3 px-2 rounded-2xl bg-amber-300 text-slate-900 font-black text-sm active:scale-[.98]">เลือกฝึกหลายกลุ่มพร้อมกัน</button>
                     </div>
                 </section>
 
@@ -1339,6 +1341,37 @@
         </div>
     </div>
 
+    <div id="skill12MultiModal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-slate-950/60 p-3">
+        <div class="w-full max-w-lg max-h-[94dvh] bg-white rounded-[2rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-teal-800 text-white p-4 flex items-center justify-between shrink-0">
+                <div class="text-left"><div class="font-black text-lg">ฝึกหลายกลุ่มพร้อมกัน</div><div id="skill12MultiSubtitle" class="text-xs font-bold text-teal-100">เลือกอย่างน้อย 1 กลุ่ม</div></div>
+                <button onclick="closeSkill12MultiSelect()" class="w-10 h-10 rounded-xl bg-teal-700 font-black text-xl">×</button>
+            </div>
+            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 space-y-4 bg-slate-50">
+                <section class="bg-white rounded-2xl border border-slate-100 p-3">
+                    <div class="flex items-center justify-between gap-2 mb-2"><div class="font-black text-slate-800 text-sm">เลือกกลุ่มโจทย์</div><button onclick="selectRecommendedSkill12Multi()" class="px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-black text-[11px]">เลือก 2 กลุ่มที่เน้น</button></div>
+                    <div id="skill12MultiGroupGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                </section>
+                <section class="bg-white rounded-2xl border border-slate-100 p-3">
+                    <div class="text-left text-xs font-black text-slate-700 mb-2">จำนวนข้อ</div>
+                    <div id="skill12MultiCountChoices" class="grid grid-cols-3 gap-2"></div>
+                </section>
+                <section class="bg-white rounded-2xl border border-slate-100 p-3 space-y-3">
+                    <div class="text-left text-xs font-black text-slate-700">รูปแบบการเล่น</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="skill12MultiModeTraining" onclick="setSkill12MultiMode('training')" class="skill12-choice active py-3 rounded-xl border border-teal-200 font-black text-sm">ฝึกซ้อม</button>
+                        <button id="skill12MultiModeExam" onclick="setSkill12MultiMode('exam')" class="skill12-choice py-3 rounded-xl border border-slate-200 font-black text-sm">แข่งขันจริง</button>
+                    </div>
+                    <div id="skill12MultiTrainingOptions" class="rounded-2xl bg-amber-50 border border-amber-100 p-3 space-y-3">
+                        <div class="flex items-center justify-between gap-3"><div class="text-left"><div class="font-black text-amber-800 text-sm">จับเวลาต่อข้อ</div><div class="text-[10px] font-bold text-amber-600">เปิดวนซ้ำข้อไม่ทันได้</div></div><label class="flex items-center gap-2"><input id="skill12MultiPerTimerCheck" type="checkbox" checked onchange="syncSkill12MultiControls()" class="w-5 h-5 accent-amber-600"><span class="font-black text-xs">เปิด</span></label></div>
+                        <div class="flex items-center gap-2"><input id="skill12MultiSecondsInput" type="number" min="1" max="60" value="5" class="flex-1 px-3 py-2 rounded-xl border border-amber-200 bg-white font-black text-center"><span class="font-black text-amber-800 text-xs">วินาที/ข้อ</span></div>
+                        <label id="skill12MultiRepeatRow" class="flex items-center justify-between gap-3"><span class="font-black text-slate-700 text-sm">วนซ้ำข้อไม่ทันจนถูกครบ</span><input id="skill12MultiRepeatCheck" type="checkbox" checked class="w-5 h-5 accent-teal-600"></label>
+                    </div>
+                </section>
+            </div>
+            <div class="p-4 border-t bg-white shrink-0"><button onclick="startSelectedSkill12Multi()" class="w-full py-4 rounded-2xl bg-teal-700 text-white font-black text-lg shadow-md active:scale-[.98]">เริ่มฝึกกลุ่มที่เลือก</button></div>
+        </div>
+    </div>
 
 
     <!-- RESTORED SCREEN: user/admin management -->
@@ -1497,12 +1530,28 @@
                             </div>
                         </div>
                     </section>
+                    <section class="bg-white rounded-3xl p-4 border border-amber-200 shadow-sm">
+                        <div class="font-black text-slate-800 text-left mb-1">3. โจทย์พิเศษจากโค้ช</div>
+                        <div class="text-[11px] font-bold text-slate-400 text-left mb-3">ใช้คลังทริคคูณลัดและระบบฝึก 12 กลุ่มในการแข่งขันได้</div>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button id="mpCustomSourceSkill12" onclick="setMultiplayerCustomSource('skill12')" class="skill12-choice active py-2.5 rounded-xl border border-amber-200 font-black text-[11px]">12 กลุ่ม</button>
+                            <button id="mpCustomSourceTricks" onclick="setMultiplayerCustomSource('tricks')" class="skill12-choice py-2.5 rounded-xl border border-slate-200 font-black text-[11px]">ทริคคูณลัด</button>
+                            <button id="mpCustomSourceMixed" onclick="setMultiplayerCustomSource('mixed')" class="skill12-choice py-2.5 rounded-xl border border-slate-200 font-black text-[11px]">ผสมทั้งสอง</button>
+                        </div>
+                        <div id="mpCustomSkill12Panel" class="mt-3 rounded-2xl bg-teal-50 border border-teal-100 p-3">
+                            <div class="flex items-center justify-between mb-2"><div class="text-xs font-black text-teal-800">เลือกกลุ่ม</div><button onclick="setMultiplayerRecommendedGroups()" class="px-2 py-1 rounded-lg bg-white text-teal-700 border border-teal-200 font-black text-[10px]">เน้น 2–3/3–3 ด้านสลับ</button></div>
+                            <div id="mpCustomSkill12Grid" class="grid grid-cols-2 gap-1.5"></div>
+                        </div>
+                        <div id="mpCustomTrickPanel" class="hidden mt-3"><label for="mpCustomTrickSelect" class="block text-left text-xs font-black text-amber-800 mb-1">เลือกทริค</label><select id="mpCustomTrickSelect" class="w-full px-3 py-2.5 rounded-xl border border-amber-200 bg-amber-50 font-black text-sm"></select></div>
+                        <div class="mt-3"><div class="text-left text-xs font-black text-slate-700 mb-2">จำนวนข้อ</div><div id="mpCustomCountSelector" class="grid grid-cols-5 gap-1"></div></div>
+                        <button onclick="createMultiplayerCustomRoom()" class="mt-3 w-full py-3 bg-amber-500 text-slate-950 rounded-2xl font-black">สร้างห้องโจทย์พิเศษ</button>
+                    </section>
                 </div>
 
                 <div id="multiplayerJoinPanel" class="bg-white rounded-3xl p-4 border border-purple-100 shadow-sm">
                     <h3 class="text-left text-base font-black text-gray-800">เข้าร่วมห้อง</h3>
                     <p class="text-left text-xs text-gray-400 font-bold mb-3">คนที่ 1 = ฝั่งแดง • คนที่ 2 = ฝั่งน้ำเงิน</p>
-                    <div class="grid grid-cols-[1fr_auto] gap-2"><input id="multiplayerCodeInput" maxlength="8" placeholder="รหัสห้อง" class="uppercase w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-black text-center tracking-widest"><button onclick="joinMultiplayerRoomFromInput()" class="px-4 py-3 bg-purple-600 text-white rounded-2xl font-black">เข้า</button></div>
+                    <div class="grid grid-cols-[1fr_auto] gap-2"><input id="multiplayerCodeInput" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="รหัส 4 หลัก" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-black text-center tracking-[0.35em]"><button onclick="joinMultiplayerRoomFromInput()" class="px-4 py-3 bg-purple-600 text-white rounded-2xl font-black">เข้า</button></div>
                 </div>
                 <div id="multiplayerHelpPanel" class="bg-purple-50 border border-purple-100 rounded-2xl p-3 text-xs text-purple-800 font-bold leading-relaxed">สร้างห้องแล้วทุกคนจะอยู่หน้ารอ ไม่มีการจับเวลาหรือแสดงโจทย์จนกว่าผู้สร้างห้องจะกดเริ่ม</div>
 
