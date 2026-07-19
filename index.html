@@ -1157,6 +1157,10 @@
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     โหมดฝึกซ้อมอิสระ (แม่ 2-25 × 1-99)
                 </button>
+                <button onclick="openCompetitionCriteriaScreen()" class="w-full py-3.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7"></path><path d="M9 11h7"></path></svg>
+                    ฝึกตามเกณฑ์การแข่งขัน
+                </button>
                 <button onclick="openMultiplayerScreen()" class="w-full py-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     โหมดแข่งขันพร้อมกัน
@@ -2035,7 +2039,48 @@
         </div>
     </div>
 
+
+    <!-- Competition-criteria training -->
+    <div id="competitionCriteriaScreen" class="h-[100dvh] w-full hidden bg-cyan-50 items-center justify-center md:p-4">
+        <div class="w-full h-full md:h-auto md:max-h-[95dvh] md:max-w-3xl bg-white md:rounded-3xl shadow-xl overflow-hidden flex flex-col">
+            <div class="bg-cyan-700 text-white px-4 py-3 flex items-center justify-between shrink-0">
+                <button onclick="returnFromCompetitionCriteriaScreen()" class="p-2 rounded-xl bg-white/15 active:scale-95" aria-label="กลับ">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center"><div class="font-black text-base md:text-lg">ฝึกตามเกณฑ์การแข่งขัน</div><div class="text-[10px] font-bold text-cyan-100">ใช้ configuration และตัวสร้างโจทย์กลางเดียวกับแข่งขัน ไต่ระดับ PDF และแข่งขันพร้อมกัน</div></div>
+                <div class="w-9"></div>
+            </div>
+            <div class="p-4 overflow-y-auto custom-scrollbar space-y-4">
+                <section class="rounded-2xl border border-cyan-100 bg-cyan-50 p-3">
+                    <div class="text-xs font-black text-cyan-900 mb-2">เลือกระดับ</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="criteriaPrimaryBtn" onclick="setCompetitionCriteriaLevel('primary')" class="py-3 rounded-xl border font-black text-sm">ประถมศึกษา</button>
+                        <button id="criteriaSecondaryBtn" onclick="setCompetitionCriteriaLevel('secondary')" class="py-3 rounded-xl border font-black text-sm">มัธยมศึกษา</button>
+                    </div>
+                </section>
+                <section class="rounded-2xl border border-slate-100 bg-white p-3">
+                    <div class="flex items-center justify-between gap-2 mb-2"><div class="text-xs font-black text-slate-800">เลือกชุดที่ต้องการฝึก</div><button onclick="selectAllCompetitionCriteriaSets()" class="px-2.5 py-1.5 rounded-lg bg-cyan-50 text-cyan-800 border border-cyan-200 font-black text-[11px]">เลือกครบ 5 ชุด</button></div>
+                    <div id="criteriaSetGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                </section>
+                <section class="rounded-2xl border border-slate-100 bg-white p-3">
+                    <div class="text-xs font-black text-slate-800 mb-2">จำนวนข้อ</div>
+                    <div id="criteriaCountGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
+                    <div id="criteriaCountHint" class="mt-2 text-[11px] font-bold text-slate-400"></div>
+                </section>
+                <section class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                    <div class="text-xs font-black text-emerald-900">รูปแบบฝึกซ้อม</div>
+                    <div class="mt-1 text-[11px] font-bold text-emerald-700 leading-relaxed">จับเวลาเดินหน้าแบบไม่จำกัด • พิมพ์ถูกแล้วเปลี่ยนข้ออัตโนมัติ • หน้าสรุปฝึกเฉพาะข้อที่เคยตอบผิดหรือใช้เวลาเกิน 10 วินาทีได้</div>
+                </section>
+                <div id="criteriaValidationSummary" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-[11px] font-bold text-slate-600"></div>
+                <button onclick="startConfiguredCompetitionCriteriaTraining()" class="w-full py-3.5 rounded-2xl bg-cyan-700 text-white font-black text-base shadow-md active:scale-95">เริ่มฝึกตามเกณฑ์</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== SCRIPT ==================== -->
+    
+
+
     
 
 
