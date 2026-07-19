@@ -980,6 +980,8 @@
         #slow10QuestionList { max-height:min(42dvh,390px); overflow:auto; }
         .slow10-row { display:flex; align-items:center; gap:.65rem; padding:.7rem; border:1px solid #e2e8f0; border-radius:1rem; background:#fff; }
         .task-choice.active { background:#0f766e; color:#fff; border-color:#0f766e; }
+        .ladder-run-choice.active { background:#0f766e; color:#fff; border-color:#0f766e; box-shadow:0 4px 12px rgba(15,118,110,.16); }
+        .standard-result-count.active { background:#2563eb; color:#fff; border-color:#2563eb; }
 
 </style>
 </head>
@@ -1069,6 +1071,16 @@
                     <button id="btnSize5" onclick="setGameSizeFraction(5)" class="py-2 rounded-lg text-xs font-black transition-all">5/5<br><span class="text-[10px] font-bold">250</span></button>
                 </div>
                 <p id="gameSizeHint" class="text-[11px] text-gray-400 font-bold mt-1.5 text-left">5/5 = 250 ข้อ ชุดละ 50 ข้อ เวลา 30 นาที</p>
+            </div>
+
+            <!-- Ladder Run Mode -->
+            <div id="ladderPracticePanel" class="mb-4 hidden rounded-2xl border border-teal-100 bg-teal-50 p-3 text-left">
+                <div class="font-black text-teal-900 text-sm mb-2">รูปแบบการไต่ระดับ</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="ladderChallengeBtn" onclick="setLadderRunMode('challenge')" class="ladder-run-choice active py-2.5 rounded-xl border border-teal-200 bg-white text-teal-800 font-black text-xs">ทดสอบไต่ระดับ</button>
+                    <button id="ladderPracticeBtn" onclick="setLadderRunMode('practice')" class="ladder-run-choice py-2.5 rounded-xl border border-teal-200 bg-white text-teal-800 font-black text-xs">ฝึกซ้อมไต่ระดับ</button>
+                </div>
+                <div id="ladderRunModeHint" class="mt-2 text-[11px] font-bold text-teal-700 leading-relaxed">นับเวลาถอยหลัง กด Enter เพื่อไปข้อถัดไป และต้องถูกครบจึงผ่านด่าน</div>
             </div>
 
             <!-- Exam Repeat Mode Toggle -->
