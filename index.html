@@ -1542,10 +1542,21 @@
                                 <div class="font-black text-purple-800 text-sm">ชิงกระดานเดียว</div><div class="text-[11px] font-bold text-slate-500 mt-1">ใครตอบถูก กระดานข้อต่อไปเป็นสีของคนนั้น</div>
                             </button>
                             <button id="mpModeIndividualBtn" onclick="setMultiplayerMatchType('individual')" class="mp-mode-card">
-                                <div class="font-black text-purple-800 text-sm">แข่งทำคนละกระดาน</div><div class="text-[11px] font-bold text-slate-500 mt-1">โจทย์ชุดเดียวกัน แต่ต่างคนต่างทำ ใครครบก่อนชนะ</div>
+                            <div class="font-black text-purple-800 text-sm">แข่งทำคนละกระดาน</div><div class="text-[11px] font-bold text-slate-500 mt-1">โจทย์ชุดเดียวกัน แต่ต่างคนต่างทำ ใครครบก่อนชนะ</div>
+                        </button>
+                    </div>
+                    <div id="mpPlayModePanel" class="hidden mt-3 pt-3 border-t border-purple-100">
+                        <div class="text-xs font-black text-slate-800 mb-2">รูปแบบการตอบ (เฉพาะคนละกระดาน)</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="mpPlayModeTrainingBtn" onclick="window.mpCustomPlayMode='training'; document.getElementById('mpPlayModeTrainingBtn').classList.add('ring-2', 'ring-purple-500', 'bg-purple-50'); document.getElementById('mpPlayModeExamBtn').classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50');" class="mp-mode-card ring-2 ring-purple-500 bg-purple-50">
+                                <div class="font-black text-purple-800 text-[11px]">แบบฝึกซ้อม</div><div class="text-[9px] font-bold text-slate-500 mt-1">พิมพ์ถูกเปลี่ยนข้ออัตโนมัติ</div>
+                            </button>
+                            <button id="mpPlayModeExamBtn" onclick="window.mpCustomPlayMode='exam'; document.getElementById('mpPlayModeExamBtn').classList.add('ring-2', 'ring-purple-500', 'bg-purple-50'); document.getElementById('mpPlayModeTrainingBtn').classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50');" class="mp-mode-card">
+                                <div class="font-black text-purple-800 text-[11px]">แข่งขันจริง</div><div class="text-[9px] font-bold text-slate-500 mt-1">ข้ามข้อได้ กดส่งทีเดียวตอนจบ</div>
                             </button>
                         </div>
-                    </section>
+                    </div>
+                </section>
                     <section class="bg-white rounded-3xl p-4 border border-purple-100 shadow-sm">
                         <div class="font-black text-slate-800 text-left mb-2">2. จำนวนข้อและระดับ</div>
                         <div id="multiplayerSizeSelector" class="grid grid-cols-3 gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
