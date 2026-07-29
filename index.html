@@ -1063,6 +1063,165 @@
             .teacher-real-main.summary-equation { font-size:clamp(2.15rem,12vw,4.8rem); }
         }
 
+
+
+        /* ===== Solo real: Admin control-only fullscreen ===== */
+        body.solo-admin-control-mode {
+            overflow: hidden !important;
+            background: #ffffff !important;
+        }
+        body.solo-admin-control-mode #playingScreen {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 80 !important;
+            width: 100vw !important;
+            height: 100dvh !important;
+            padding: 0 !important;
+            align-items: stretch !important;
+            justify-content: stretch !important;
+            background: #ffffff !important;
+        }
+        body.solo-admin-control-mode #gamePlayCard {
+            width: 100vw !important;
+            height: 100dvh !important;
+            max-width: none !important;
+            max-height: 100dvh !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+        body.solo-admin-control-mode #numpadArea {
+            display: none !important;
+        }
+        body.solo-admin-control-mode #gridButton,
+        body.solo-admin-control-mode #submitHeaderButton {
+            display: none !important;
+        }
+        body.solo-admin-control-mode #gamePlayCard > .bg-blue-600 {
+            min-height: 58px !important;
+            padding: .55rem 1rem !important;
+        }
+        body.solo-admin-control-mode #timerDisplay {
+            font-size: clamp(1.35rem, 2.6vw, 2.2rem) !important;
+            line-height: 1 !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoomCodeBar {
+            min-height: 42px !important;
+            padding: .35rem 1rem !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoomCodeText {
+            font-size: clamp(1rem, 2vw, 1.35rem) !important;
+        }
+        body.solo-admin-control-mode #progressInfoBar {
+            min-height: 76px !important;
+            padding: .65rem clamp(1rem, 2vw, 2rem) !important;
+            font-size: clamp(.95rem, 1.8vw, 1.35rem) !important;
+            line-height: 1.2 !important;
+        }
+        body.solo-admin-control-mode #liveScoreInfo {
+            min-width: 11rem;
+            text-align: center;
+            line-height: 1.25 !important;
+        }
+        body.solo-admin-control-mode #questionArea {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            padding: clamp(1rem, 3vw, 2.5rem) !important;
+            overflow: hidden !important;
+        }
+        body.solo-admin-control-mode #questionArea > .flex.flex-row {
+            flex: 1 1 auto !important;
+            width: 100% !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        body.solo-admin-control-mode #questionArea > .flex.flex-row > div:nth-child(2) {
+            display: none !important;
+        }
+        body.solo-admin-control-mode #questionText {
+            font-size: clamp(4rem, 11vw, 10rem) !important;
+            line-height: 1 !important;
+            text-align: center !important;
+            letter-spacing: -.045em !important;
+        }
+        body.solo-admin-control-mode #sourceMultiplicationHint {
+            display: block !important;
+            margin-top: 1rem !important;
+            font-size: clamp(.9rem, 1.6vw, 1.3rem) !important;
+            line-height: 1.25 !important;
+            text-align: center !important;
+        }
+        body.solo-admin-control-mode #questionProgressBarContainer {
+            width: min(66vw, 760px) !important;
+            height: clamp(.75rem, 1.4vw, 1rem) !important;
+            margin-top: clamp(1rem, 2.5vh, 2rem) !important;
+        }
+        body.solo-admin-control-mode #questionTimeText {
+            margin-top: .75rem !important;
+            font-size: clamp(1rem, 1.8vw, 1.35rem) !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundPanel {
+            padding: clamp(1.25rem, 4vw, 3.5rem) !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundEyebrow {
+            font-size: clamp(1rem, 1.9vw, 1.45rem) !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundMain.real-round-count {
+            font-size: clamp(5rem, 15vw, 12rem) !important;
+            line-height: 1 !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundMain.real-round-answer {
+            font-size: clamp(3.2rem, 9vw, 8rem) !important;
+            line-height: 1.05 !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundSub {
+            font-size: clamp(1.15rem, 2.4vw, 1.8rem) !important;
+        }
+        body.solo-admin-control-mode #multiplayerRoundScore {
+            font-size: clamp(1rem, 2vw, 1.45rem) !important;
+        }
+        body.solo-admin-control-mode #multiplayerNextRoundBtn {
+            min-width: min(88vw, 420px) !important;
+            padding: 1rem 1.5rem !important;
+            font-size: clamp(1.05rem, 2vw, 1.4rem) !important;
+        }
+        @media (orientation: landscape) and (max-height: 620px) {
+            body.solo-admin-control-mode #gamePlayCard > .bg-blue-600 {
+                min-height: 42px !important;
+                padding: .25rem .7rem !important;
+            }
+            body.solo-admin-control-mode #progressInfoBar {
+                min-height: 50px !important;
+                padding: .3rem 1rem !important;
+            }
+            body.solo-admin-control-mode #questionArea {
+                height: auto !important;
+                min-height: 0 !important;
+                padding: .5rem 1rem !important;
+            }
+            body.solo-admin-control-mode #questionText {
+                font-size: clamp(3rem, 16dvh, 7rem) !important;
+            }
+            body.solo-admin-control-mode #sourceMultiplicationHint {
+                margin-top: .35rem !important;
+                font-size: clamp(.75rem, 3.2dvh, 1rem) !important;
+            }
+            body.solo-admin-control-mode #questionProgressBarContainer {
+                margin-top: .45rem !important;
+                height: .55rem !important;
+            }
+            body.solo-admin-control-mode #questionTimeText {
+                margin-top: .25rem !important;
+                font-size: .9rem !important;
+            }
+            body.solo-admin-control-mode #multiplayerRoundMain.real-round-answer {
+                font-size: clamp(2.6rem, 15dvh, 6rem) !important;
+            }
+            body.solo-admin-control-mode #multiplayerNextRoundBtn {
+                padding: .7rem 1.2rem !important;
+            }
+        }
+
 </style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
@@ -1181,7 +1340,7 @@
                     <div class="flex flex-col text-left">
                         <span class="text-sm font-bold text-orange-800">เปิดระบบจับเวลารายข้อ</span>
                         <span id="timerToggleHint" class="text-xs font-medium text-orange-600 leading-snug mt-0.5">
-                            ใช้ได้เฉพาะโหมดฝึกซ้อมเท่านั้น<br>เลข 1 หลัก × 1 หลัก = 1 วินาที<br>เลข 2 หลัก × 1 หลัก = 3 วินาที<br>เลข 2 หลัก × 2 หลัก = 5 วินาที
+                            ใช้ได้เฉพาะโหมดฝึกซ้อมเท่านั้น<br>เลข 1 หลัก × 1 หลัก = 1 วินาที<br>เลข 2 หลัก × 1 หลัก = 3 วินาที<br>เลข 2 หลัก × 2 หลัก = 10 วินาที
                         </span>
                     </div>
                 </label>
@@ -2200,6 +2359,8 @@
 
 
     
+
+
 
 
 
