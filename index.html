@@ -2571,6 +2571,7 @@
                         <div>• ทุกรอบแบ่งเป็น 5 ชุดย่อยตามเกณฑ์จริง และไม่มีโจทย์ซ้ำภายในรอบเดียวกัน</div>
                         <div>• ตอบผิดแม้แต่ข้อเดียว หรือทำรอบนั้นเกินเวลา จะเริ่มสะสมใหม่ที่ครั้งที่ 1</div>
                         <div>• ผ่านเมื่อทำถูกครบและเวลาเฉลี่ย ≤ 3.60 วินาที/ข้อครบตามจำนวนครั้งติดต่อกัน</div>
+                        <div>• ระบบรวมเวลาของรอบที่ผ่านต่อเนื่องทั้งหมด แล้วสรุปเวลาและค่าเฉลี่ยจริงเมื่อครบ 250 ข้อ</div>
                     </div>
                 </section>
                 <div id="continuousSavedProgress" class="hidden rounded-2xl border border-amber-200 bg-amber-50 p-3"></div>
@@ -2618,8 +2619,10 @@
                         <span id="continuousCursor" class="w-1 h-10 sm:h-12 md:h-14 bg-blue-400 animate-pulse ml-1"></span>
                     </div>
                 </div>
-                <div id="continuousSourceHint" class="mt-1.5 sm:mt-2 text-[11px] sm:text-xs font-bold text-slate-400 tracking-wide" aria-live="polite">
-                    เฉลี่ยปัจจุบัน <span id="continuousAverageText">0.00 วิ/ข้อ</span> • เป้าหมายไม่เกิน 3.60 วิ/ข้อ
+                <div id="continuousSourceHint" class="mt-1.5 sm:mt-2 text-[11px] sm:text-xs font-bold text-slate-400 tracking-wide text-center" aria-live="polite">
+                    <div>เฉลี่ยรอบปัจจุบัน <span id="continuousAverageText">0.00 วิ/ข้อ</span> • เป้าหมายไม่เกิน 3.60 วิ/ข้อ</div>
+                    <div id="continuousCumulativeHint" class="mt-1 text-blue-600">สะสมที่ผ่าน 0 / 250 ข้อ • เวลารวม 0:00.00 • เฉลี่ย 0.00 วิ/ข้อ</div>
+                    <div id="continuousLiveOverallHint" class="mt-0.5 text-slate-400">รวมรอบปัจจุบันชั่วคราว 0 / 250 ข้อ • เฉลี่ย 0.00 วิ/ข้อ</div>
                 </div>
                 <div id="continuousQuestionProgressBarContainer" class="w-[200px] sm:w-[250px] bg-gray-100 h-2 sm:h-2.5 rounded-full mt-5 sm:mt-6 shadow-inner overflow-hidden border border-gray-200">
                     <div id="continuousRoundBar" class="h-full rounded-full bg-green-500 w-full"></div>
@@ -2681,10 +2684,19 @@
             </div>
             <div class="p-4 sm:p-5 space-y-3">
                 <div class="grid grid-cols-2 gap-2">
-                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาใช้จริง</div><div id="continuousResultTime" class="text-xl font-black tabular-nums">1:20.00</div></div>
-                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาเฉลี่ย</div><div id="continuousResultAverage" class="text-xl font-black tabular-nums">3.20 วิ/ข้อ</div></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาใช้จริงรอบนี้</div><div id="continuousResultTime" class="text-xl font-black tabular-nums">1:20.00</div></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาเฉลี่ยรอบนี้</div><div id="continuousResultAverage" class="text-xl font-black tabular-nums">3.20 วิ/ข้อ</div></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">ตอบถูก</div><div id="continuousResultCorrect" class="text-xl font-black">25 / 25</div></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">โจทย์ไม่ซ้ำที่ใช้แล้ว</div><div id="continuousResultUsed" class="text-xl font-black">25</div></div>
+                </div>
+                <div id="continuousCumulativeSummary" class="rounded-2xl border border-blue-200 bg-blue-50 p-3">
+                    <div class="text-xs font-black text-blue-900 text-center mb-2">ผลสะสมต่อเนื่องสำหรับ 250 ข้อ</div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div><div class="text-[10px] font-black text-blue-500">สะสมแล้ว</div><div id="continuousResultCumulativeQuestions" class="text-lg font-black text-blue-900">0 / 250</div></div>
+                        <div><div class="text-[10px] font-black text-blue-500">เวลารวม</div><div id="continuousResultCumulativeTime" class="text-lg font-black text-blue-900 tabular-nums">0:00.00</div></div>
+                        <div><div class="text-[10px] font-black text-blue-500">เฉลี่ยรวม</div><div id="continuousResultCumulativeAverage" class="text-lg font-black text-blue-900 tabular-nums">0.00 วิ/ข้อ</div></div>
+                    </div>
+                    <div id="continuousResultResetNotice" class="hidden mt-2 rounded-xl bg-white/80 border border-blue-100 px-3 py-2 text-[11px] font-bold text-slate-600 text-center"></div>
                 </div>
                 <div id="continuousResultReason" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-bold leading-relaxed"></div>
                 <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 overflow-hidden">
