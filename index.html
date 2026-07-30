@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -2686,7 +2687,28 @@
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">โจทย์ไม่ซ้ำที่ใช้แล้ว</div><div id="continuousResultUsed" class="text-xl font-black">25</div></div>
                 </div>
                 <div id="continuousResultReason" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-bold leading-relaxed"></div>
-                <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm font-bold text-rose-800"></div>
+                <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-rose-200 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="text-sm font-black text-rose-900">ข้อที่ผิดหรือไม่ทัน</div>
+                            <div class="text-[11px] font-bold text-rose-700">แสดงทุกข้อของรอบนี้เหมือนหน้าสรุปโหมดปกติ</div>
+                        </div>
+                        <div id="continuousIssueCountBadge" class="shrink-0 px-2.5 py-1 rounded-full bg-rose-600 text-white text-xs font-black">0 ข้อ</div>
+                    </div>
+                    <div class="max-h-[38dvh] overflow-auto custom-scrollbar bg-white">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="sticky top-0 z-10 bg-rose-100 text-rose-900">
+                                <tr>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ข้อ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black">โจทย์</th>
+                                    <th class="px-3 py-2 text-[11px] font-black">คำตอบ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ผล</th>
+                                </tr>
+                            </thead>
+                            <tbody id="continuousIssueTableBody" class="divide-y divide-rose-100 text-xs font-bold text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
                 <button id="continuousNextRoundBtn" onclick="startContinuousNextRound()" class="w-full py-3.5 rounded-2xl bg-fuchsia-700 hover:bg-fuchsia-800 text-white font-black shadow-lg active:scale-95">เริ่มรอบต่อไป</button>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="returnToContinuousSetup()" class="py-3 rounded-xl bg-slate-100 text-slate-700 font-black active:scale-95">ตั้งค่า</button>
