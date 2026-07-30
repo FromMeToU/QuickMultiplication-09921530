@@ -2366,6 +2366,206 @@
 
 
 
+<!-- SPEED15_ADAPTIVE_TRAINING_V1 -->
+<style>
+    body.speed15-active, html.speed15-active { overflow:hidden !important; height:100% !important; background:#f8fafc !important; }
+    .s15-screen { position:fixed; inset:0; z-index:140; width:100vw; height:100dvh; background:#f3f7fb; color:#0f172a; }
+    .s15-safe-top { padding-top:max(.7rem, env(safe-area-inset-top)); }
+    .s15-safe-bottom { padding-bottom:max(.7rem, env(safe-area-inset-bottom)); }
+    .s15-scroll { overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+    .s15-card { background:#fff; border:1px solid #dfe8f2; border-radius:1.35rem; box-shadow:0 8px 24px rgba(15,41,66,.07); }
+    .s15-choice { border:2px solid #dce6f1; background:#fff; border-radius:1rem; padding:.78rem; text-align:left; transition:.1s ease; }
+    .s15-choice.active { border-color:#0f766e; background:#ecfdf5; box-shadow:0 0 0 2px rgba(15,118,110,.08); }
+    .s15-target-choice { min-height:58px; border:1px solid #dbe5ef; border-radius:1rem; background:#fff; font-weight:900; color:#475569; }
+    .s15-target-choice.active { background:#0f766e; color:#fff; border-color:#0f766e; box-shadow:0 7px 18px rgba(15,118,110,.18); }
+    #speed15PlayScreen { background:#fff; }
+    #speed15PlayShell { height:100dvh; display:grid; grid-template-rows:auto auto minmax(118px,1fr) auto; overflow:hidden; }
+    #speed15TopBar { min-height:62px; background:linear-gradient(115deg,#0f4f80,#1976d2 54%,#0f9b8e); color:#fff; }
+    #speed15StatusBar { min-height:76px; background:#eef6ff; border-bottom:1px solid #dbeafe; display:grid; grid-template-columns:1fr 1fr 1fr; align-items:center; }
+    #speed15QuestionZone { min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:.45rem 1rem; }
+    #speed15QuestionLine { min-height:92px; display:flex; align-items:center; justify-content:center; width:100%; white-space:nowrap; }
+    #speed15QuestionText { font-size:clamp(3rem,8vw,7rem); font-weight:900; letter-spacing:-.055em; line-height:1; }
+    #speed15AnswerBox { min-width:clamp(8rem,20vw,16rem); height:clamp(4rem,9vw,7.2rem); margin-left:clamp(.6rem,2vw,1.4rem); display:flex; align-items:center; justify-content:center; border-bottom:5px solid #2563eb; font-size:clamp(2.8rem,7.4vw,6.2rem); font-weight:900; color:#0f172a; }
+    #speed15QuestionTimerTrack { width:min(620px,82vw); height:.58rem; background:#e2e8f0; border-radius:999px; overflow:hidden; margin-top:.55rem; }
+    #speed15QuestionTimerBar { height:100%; width:100%; background:#16a34a; border-radius:999px; transform-origin:left center; }
+    #speed15NumpadArea { background:#f4f7fa; border-top:1px solid #e2e8f0; border-radius:1.5rem 1.5rem 0 0; padding:.55rem max(.6rem,env(safe-area-inset-right)) max(.55rem,env(safe-area-inset-bottom)) max(.6rem,env(safe-area-inset-left)); }
+    #speed15Numpad { width:min(760px,94vw); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:.55rem; grid-auto-rows:clamp(3.65rem,8.8vh,5.8rem); }
+    #speed15Numpad button { border:1px solid #e2e8f0; background:#fff; border-radius:1rem; font-size:clamp(1.8rem,4.4vw,3rem); font-weight:700; color:#334155; box-shadow:0 3px 9px rgba(15,23,42,.04); touch-action:manipulation; }
+    #speed15Numpad button:active { transform:scale(.985); background:#dbeafe; }
+    #speed15Numpad .s15-enter { grid-column:span 3; background:#2563eb; color:#fff; border-color:#1d4ed8; font-size:clamp(1.2rem,3vw,1.8rem); font-weight:900; }
+    #speed15Numpad .s15-zero { grid-column:span 2; }
+    #speed15Numpad .s15-del { background:#fff1f2; color:#dc2626; border-color:#fecdd3; }
+    #speed15PaceText.s15-ahead { color:#047857; }
+    #speed15PaceText.s15-behind { color:#dc2626; }
+    #speed15PaceText.s15-even { color:#0369a1; }
+    #speed15Feedback { position:fixed; left:50%; top:47%; transform:translate(-50%,-50%); z-index:145; min-width:min(340px,78vw); border-radius:1.2rem; padding:.8rem 1.1rem; text-align:center; font-weight:900; box-shadow:0 18px 45px rgba(15,23,42,.18); pointer-events:none; opacity:0; transition:opacity .08s ease; }
+    #speed15Feedback.show { opacity:1; }
+    #speed15SegmentToast { position:fixed; inset:auto 50% 14%; transform:translateX(50%); z-index:145; width:min(420px,88vw); border-radius:1.2rem; background:#0f172a; color:#fff; padding:.9rem 1.1rem; text-align:center; font-weight:900; box-shadow:0 16px 42px rgba(15,23,42,.3); opacity:0; pointer-events:none; transition:opacity .12s ease; }
+    #speed15SegmentToast.show { opacity:1; }
+    .s15-result-metric { border:1px solid #dfe8f2; border-radius:1rem; background:#f8fafc; padding:.75rem; text-align:center; }
+    .s15-slow-row { display:grid; grid-template-columns:2.2rem 1fr auto auto; gap:.55rem; align-items:center; padding:.62rem .7rem; border-bottom:1px solid #edf2f7; font-size:.8rem; }
+    @media (orientation:landscape) and (max-height:690px) {
+        #speed15PlayShell { grid-template-rows:auto auto minmax(72px,1fr) auto; }
+        #speed15TopBar { min-height:43px; }
+        #speed15StatusBar { min-height:48px; }
+        #speed15QuestionLine { min-height:64px; }
+        #speed15QuestionText { font-size:clamp(2.6rem,11dvh,5rem); }
+        #speed15AnswerBox { height:clamp(2.8rem,12dvh,5rem); font-size:clamp(2.5rem,10.5dvh,4.6rem); border-bottom-width:4px; }
+        #speed15QuestionTimerTrack { margin-top:.18rem; height:.38rem; }
+        #speed15QuestionMeta { font-size:.68rem !important; margin-top:.12rem !important; }
+        #speed15NumpadArea { padding:.3rem .45rem max(.25rem,env(safe-area-inset-bottom)); }
+        #speed15Numpad { width:min(650px,62vw); gap:.35rem; grid-auto-rows:minmax(0,min(3.25rem,calc((100dvh - 195px)/5))); }
+        #speed15Numpad button { border-radius:.75rem; font-size:clamp(1.35rem,6dvh,2.35rem); }
+        #speed15Numpad .s15-enter { font-size:clamp(1rem,4dvh,1.45rem); }
+    }
+    @media (max-width:640px) and (orientation:portrait) {
+        #speed15TopBar { min-height:58px; }
+        #speed15StatusBar { min-height:84px; grid-template-columns:1fr 1fr; }
+        #speed15StatusBar > div:nth-child(3) { grid-column:span 2; border-top:1px solid #dbeafe; padding-top:.28rem; }
+        #speed15QuestionText { font-size:clamp(2.8rem,15vw,5.2rem); }
+        #speed15AnswerBox { min-width:7.2rem; height:4.4rem; font-size:3.2rem; }
+        #speed15Numpad { grid-auto-rows:clamp(4.2rem,8.5vh,5.5rem); }
+        .s15-slow-row { grid-template-columns:1.8rem 1fr auto; }
+        .s15-slow-row .s15-slow-target { display:none; }
+    }
+</style>
+
+<div id="speed15SetupScreen" class="s15-screen hidden">
+    <div class="h-full flex flex-col">
+        <header class="s15-safe-top shrink-0 bg-gradient-to-r from-teal-800 via-teal-700 to-blue-700 text-white px-3 pb-3 shadow-sm">
+            <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+                <button onclick="speed15CloseToMenu()" class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 font-black text-xl">‹</button>
+                <div class="text-center"><div class="font-black text-lg">พิชิต 250 ข้อใน 15 นาที</div><div class="text-[11px] font-bold text-teal-100">ฝึกจุดอ่อน → คุมจังหวะ → ทดสอบเต็มชุด</div></div>
+                <div class="w-10"></div>
+            </div>
+        </header>
+        <main class="s15-scroll flex-1 min-h-0 p-3 sm:p-5">
+            <div class="max-w-3xl mx-auto space-y-3 pb-5">
+                <section class="s15-card p-4 bg-gradient-to-br from-slate-900 to-blue-950 text-white border-0">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><div class="text-[11px] font-black text-blue-200">เป้าหมายปัจจุบัน</div><div id="speed15ProfileTarget" class="text-3xl font-black mt-1">15:00</div><div id="speed15ProfileSubtitle" class="text-xs font-bold text-blue-200 mt-1">เฉลี่ย 3.60 วินาที/ข้อ</div></div>
+                        <div class="text-right"><div class="text-[11px] font-black text-blue-200">ผลล่าสุด</div><div id="speed15ProfileLatest" class="text-lg font-black mt-1">ยังไม่มีข้อมูล</div><div id="speed15ProfileSessions" class="text-[11px] font-bold text-blue-200 mt-1">0 รอบ</div></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-4">
+                        <div class="rounded-xl bg-white/10 p-2 text-center"><div class="text-[10px] font-black text-blue-200">ดีที่สุด 250</div><div id="speed15ProfileBest" class="font-black">-</div></div>
+                        <div class="rounded-xl bg-white/10 p-2 text-center"><div class="text-[10px] font-black text-blue-200">ความแม่นล่าสุด</div><div id="speed15ProfileAccuracy" class="font-black">-</div></div>
+                        <div class="rounded-xl bg-white/10 p-2 text-center"><div class="text-[10px] font-black text-blue-200">คาดการณ์ 250</div><div id="speed15ProfileProjection" class="font-black">-</div></div>
+                    </div>
+                </section>
+
+                <section class="s15-card p-4">
+                    <div class="font-black text-slate-800 text-sm">ระดับโจทย์</div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button id="speed15LevelPrimary" onclick="speed15SetCompetitionLevel('primary')" class="s15-target-choice">ประถมศึกษา</button>
+                        <button id="speed15LevelSecondary" onclick="speed15SetCompetitionLevel('secondary')" class="s15-target-choice">มัธยมศึกษา</button>
+                    </div>
+                </section>
+
+                <section class="s15-card p-4">
+                    <div class="font-black text-slate-800 text-sm">ระดับเวลาเป้าหมาย</div>
+                    <div class="text-[11px] font-bold text-slate-500 mt-1">ผ่านเมื่อความแม่นอย่างน้อย 95% และทำเวลาได้ตามระดับ</div>
+                    <div id="speed15TargetGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-2 mt-3"></div>
+                    <div id="speed15QuestionTargets" class="mt-3 rounded-xl bg-orange-50 border border-orange-100 p-3 text-xs font-black text-orange-800"></div>
+                </section>
+
+                <section class="s15-card p-4">
+                    <div class="flex items-center justify-between gap-3"><div><div class="font-black text-slate-800 text-sm">รูปแบบการฝึก</div><div class="text-[11px] font-bold text-slate-500">ระบบแนะนำจากความแม่น เวลา และความนิ่งของช่วงละ 25 ข้อ</div></div><span id="speed15RecommendedBadge" class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-black text-[10px]">แนะนำ</span></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                        <button id="speed15ModeAuto" onclick="speed15SelectMode('auto')" class="s15-choice"><div class="font-black text-emerald-800">แผนแนะนำอัตโนมัติ</div><div id="speed15AutoReason" class="text-[11px] font-bold text-slate-500 mt-1">ระบบเลือกขั้นที่เหมาะสม</div></button>
+                        <button id="speed15ModeWeak" onclick="speed15SelectMode('weak')" class="s15-choice"><div class="font-black text-slate-800">1. ฝึกจุดอ่อน 50 ข้อ</div><div class="text-[11px] font-bold text-slate-500 mt-1">60% ข้อผิด/ช้า • 30% ปานกลาง • 10% ข้อคล่อง</div></button>
+                        <button id="speed15ModePace" onclick="speed15SelectMode('pace')" class="s15-choice"><div class="font-black text-slate-800">2. ฝึกคุมจังหวะ 100 ข้อ</div><div class="text-[11px] font-bold text-slate-500 mt-1">แบ่ง 4 ช่วง ช่วงละ 25 ข้อ พร้อมบอกเร็วหรือช้ากว่าเป้า</div></button>
+                        <button id="speed15ModeFull" onclick="speed15SelectMode('full')" class="s15-choice"><div class="font-black text-slate-800">3. ทดสอบเต็ม 250 ข้อ</div><div class="text-[11px] font-bold text-slate-500 mt-1">วัดผลจริงและเลื่อนระดับอัตโนมัติเมื่อผ่าน</div></button>
+                    </div>
+                </section>
+
+                <section class="s15-card p-4 bg-blue-50 border-blue-100">
+                    <div class="font-black text-blue-900 text-sm">กติกาการฝึก</div>
+                    <div class="text-xs font-bold text-blue-700 mt-2 leading-relaxed">พิมพ์คำตอบแล้วกด Enter ทุกข้อ • เวลารายข้อเป็นการเตือน ไม่ตัดเกม • ข้อผิดและข้อช้าจะถูกนำไปเพิ่มน้ำหนักในรอบถัดไป • หน้าจอคงตำแหน่งเดิมเพื่อลดการสับสนบนมือถือ</div>
+                </section>
+
+                <button onclick="speed15StartSelected()" class="w-full py-4 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-black text-lg shadow-md active:scale-[.99]">เริ่มแผนฝึก</button>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="speed15PlayScreen" class="s15-screen hidden">
+    <div id="speed15PlayShell">
+        <header id="speed15TopBar" class="s15-safe-top px-3 pb-2 flex items-center justify-between gap-2">
+            <button onclick="speed15AskQuit()" class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 font-black text-lg">⌂</button>
+            <div class="text-center min-w-0"><div id="speed15PlayTitle" class="font-black text-sm sm:text-base truncate">พิชิต 250</div><div id="speed15GlobalTime" class="font-mono font-black text-lg tracking-wider">00:00 / 15:00</div></div>
+            <button onclick="speed15ToggleFullscreen()" class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 font-black text-lg">⛶</button>
+        </header>
+        <div id="speed15StatusBar" class="text-center text-xs font-black">
+            <div class="px-2"><div class="text-[10px] text-slate-500">ความคืบหน้า</div><div id="speed15ProgressText" class="text-blue-800 text-base">ข้อ 1 / 250</div></div>
+            <div class="px-2 border-l border-blue-100"><div class="text-[10px] text-slate-500">คะแนน</div><div id="speed15ScoreText" class="text-emerald-700 text-base">ถูก 0 • ผิด 0</div></div>
+            <div class="px-2 border-l border-blue-100"><div class="text-[10px] text-slate-500">จังหวะเทียบเป้า</div><div id="speed15PaceText" class="s15-even text-base">เริ่มต้น</div><div id="speed15SegmentText" class="text-[10px] text-slate-500 mt-.5">ช่วง 1/10 • เป้า 01:30</div></div>
+        </div>
+        <main id="speed15QuestionZone">
+            <div id="speed15QuestionLine"><div id="speed15QuestionText">17 × 12 =</div><div id="speed15AnswerBox"></div></div>
+            <div id="speed15QuestionTimerTrack"><div id="speed15QuestionTimerBar"></div></div>
+            <div id="speed15QuestionMeta" class="mt-1.5 text-xs font-black text-slate-500">เป้ารายข้อ 6.0 วิ • เกินเวลาได้ ระบบจะบันทึกเป็นข้อช้า</div>
+        </main>
+        <footer id="speed15NumpadArea" class="s15-safe-bottom">
+            <div id="speed15Numpad">
+                <button data-s15-key="7">7</button><button data-s15-key="8">8</button><button data-s15-key="9">9</button>
+                <button data-s15-key="4">4</button><button data-s15-key="5">5</button><button data-s15-key="6">6</button>
+                <button data-s15-key="1">1</button><button data-s15-key="2">2</button><button data-s15-key="3">3</button>
+                <button data-s15-key="0" class="s15-zero">0</button><button data-s15-key="del" class="s15-del">⌫</button>
+                <button data-s15-key="enter" class="s15-enter">Enter — ส่งคำตอบและไปข้อต่อไป</button>
+            </div>
+        </footer>
+    </div>
+    <div id="speed15Feedback"></div>
+    <div id="speed15SegmentToast"></div>
+</div>
+
+<div id="speed15ResultScreen" class="s15-screen hidden">
+    <div class="h-full flex flex-col">
+        <header class="s15-safe-top shrink-0 bg-gradient-to-r from-slate-900 via-blue-950 to-teal-900 text-white px-3 pb-3">
+            <div class="max-w-3xl mx-auto text-center"><div class="font-black text-lg">สรุปการฝึกพิชิต 250</div><div id="speed15ResultSubtitle" class="text-[11px] font-bold text-blue-200">วิเคราะห์ความเร็วและความแม่น</div></div>
+        </header>
+        <main class="s15-scroll flex-1 min-h-0 p-3 sm:p-5">
+            <div class="max-w-3xl mx-auto space-y-3 pb-5">
+                <section id="speed15ResultHero" class="s15-card p-5 text-center">
+                    <div id="speed15ResultStatus" class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-black">สรุปผล</div>
+                    <div id="speed15ResultTime" class="text-5xl font-black text-slate-900 mt-3">15:00</div>
+                    <div id="speed15ResultMainText" class="font-black text-slate-700 mt-2">คาดการณ์ 250 ข้อ</div>
+                    <div id="speed15ResultAdvice" class="text-xs font-bold text-slate-500 mt-2 leading-relaxed"></div>
+                </section>
+                <section class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="s15-result-metric"><div class="text-[10px] font-black text-slate-500">ความแม่น</div><div id="speed15ResultAccuracy" class="text-xl font-black text-blue-700">0%</div></div>
+                    <div class="s15-result-metric"><div class="text-[10px] font-black text-slate-500">เฉลี่ย/ข้อ</div><div id="speed15ResultAverage" class="text-xl font-black text-blue-700">0.00</div></div>
+                    <div class="s15-result-metric"><div class="text-[10px] font-black text-slate-500">ข้อช้า</div><div id="speed15ResultSlow" class="text-xl font-black text-orange-600">0</div></div>
+                    <div class="s15-result-metric"><div class="text-[10px] font-black text-slate-500">ความนิ่งช่วง</div><div id="speed15ResultStability" class="text-xl font-black text-teal-700">-</div></div>
+                </section>
+                <section class="s15-card p-4">
+                    <div class="font-black text-slate-800 text-sm">เวลาเฉลี่ยตามประเภทโจทย์</div>
+                    <div id="speed15KindBreakdown" class="grid grid-cols-3 gap-2 mt-3"></div>
+                </section>
+                <section class="s15-card overflow-hidden">
+                    <div class="p-4 pb-2"><div class="font-black text-slate-800 text-sm">10 ข้อที่ใช้เวลานานที่สุด</div><div class="text-[11px] font-bold text-slate-500">ใช้สำหรับเลือกโจทย์ฝึกรอบถัดไปโดยอัตโนมัติ</div></div>
+                    <div id="speed15SlowestList"></div>
+                </section>
+                <section class="s15-card p-4 bg-emerald-50 border-emerald-100">
+                    <div class="text-[11px] font-black text-emerald-600">แผนรอบถัดไป</div>
+                    <div id="speed15NextTitle" class="font-black text-emerald-900 mt-1">ฝึกคุมจังหวะ 100 ข้อ</div>
+                    <div id="speed15NextReason" class="text-xs font-bold text-emerald-700 mt-1 leading-relaxed"></div>
+                    <button onclick="speed15StartRecommendedFromResult()" class="w-full mt-3 py-3 rounded-2xl bg-emerald-600 text-white font-black shadow-sm">เริ่มแผนที่แนะนำ</button>
+                </section>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="speed15RestartSame()" class="py-3 rounded-2xl bg-blue-600 text-white font-black">เล่นรูปแบบเดิม</button>
+                    <button onclick="speed15OpenSetup()" class="py-3 rounded-2xl bg-white border border-slate-300 text-slate-700 font-black">ตั้งค่าใหม่</button>
+                </div>
+                <button onclick="speed15CloseToMenu()" class="w-full py-3 rounded-2xl bg-slate-800 text-white font-black">กลับหน้าหลัก</button>
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+
     <script src="script.min.js"></script>
 </body>
 </html>
