@@ -1295,6 +1295,45 @@
         .presentation-method { font-size: clamp(1rem, 4vh, 1.75rem); }
     }
 
+
+
+    /* ===== Continuous simulated competition ===== */
+    #continuousSimSetupScreen,
+    #continuousSimPlayScreen,
+    #continuousSimResultScreen {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100dvh;
+        z-index: 72;
+    }
+    #continuousSimSetupScreen { background: linear-gradient(145deg,#fdf4ff 0%,#f8fafc 48%,#ecfeff 100%); }
+    #continuousSimPlayScreen { background:#07111f; }
+    #continuousSimResultScreen { background:linear-gradient(145deg,#081424 0%,#111827 100%); }
+    .continuous-plan-btn.active,
+    .continuous-level-btn.active {
+        background:#a21caf !important;
+        border-color:#a21caf !important;
+        color:#fff !important;
+        box-shadow:0 0 0 3px rgba(162,28,175,.13);
+    }
+    #continuousQuestionText { font-size:clamp(3.3rem,15vw,8.5rem); line-height:1; letter-spacing:-.055em; }
+    #continuousAnswerText { font-size:clamp(2.8rem,12vw,7rem); line-height:1; min-width:5ch; }
+    #continuousNumpad { grid-template-columns:repeat(3,minmax(0,1fr)); grid-auto-rows:minmax(3.7rem,1fr); }
+    #continuousNumpad button { touch-action:manipulation; -webkit-tap-highlight-color:transparent; user-select:none; min-height:3.7rem; }
+    #continuousRoundBar { transition:width .1s linear,background-color .15s ease; }
+    #continuousSimPlayScreen.continuous-danger #continuousRoundBar { background:#ef4444 !important; }
+    #continuousSimPlayScreen.continuous-danger #continuousTimerBox { background:#7f1d1d !important; border-color:#ef4444 !important; }
+    @media (orientation:landscape) and (max-height:650px) {
+        #continuousPlayHeader { min-height:42px; padding-top:.25rem !important; padding-bottom:.25rem !important; }
+        #continuousQuestionPanel { padding:.25rem .75rem !important; }
+        #continuousQuestionText { font-size:clamp(3rem,14vh,6rem); }
+        #continuousAnswerText { font-size:clamp(2.5rem,11vh,5rem); }
+        #continuousNumpadWrap { padding:.3rem .6rem max(.25rem,env(safe-area-inset-bottom)) !important; }
+        #continuousNumpad { width:min(64vw,720px); grid-auto-rows:minmax(2.6rem,calc((100dvh - 180px)/4)); gap:.35rem !important; }
+        #continuousNumpad button { min-height:0; font-size:clamp(1.5rem,6vh,2.5rem) !important; }
+    }
+
 </style>
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans overflow-hidden select-none w-full">
@@ -1472,6 +1511,10 @@
                 <button onclick="openCompetitionCriteriaScreen()" class="w-full py-3.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7"></path><path d="M9 11h7"></path></svg>
                     ฝึกตามเกณฑ์การแข่งขัน
+                </button>
+                <button onclick="openContinuousSimulationMode()" class="w-full py-3.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"></path><path d="M12 17v4"></path><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="m7 12 3-3 2 2 5-5"></path></svg>
+                    แข่งขันเสมือนจริงแบบต่อเนื่อง
                 </button>
                 <button onclick="openPresentationMode()" class="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-bold text-base sm:text-lg transition-transform active:scale-95 shadow-md flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="m8 12 2.5-2.5L13 12l3-3"></path></svg>
@@ -2431,6 +2474,142 @@
 
 
     <!-- ==================== PRESENTATION / TUTORING MODE ==================== -->
+
+
+    <!-- ==================== CONTINUOUS SIMULATED COMPETITION ==================== -->
+    <div id="continuousSimSetupScreen" class="hidden items-center justify-center p-3 sm:p-5 overflow-y-auto">
+        <div class="w-full max-w-xl bg-white rounded-[2rem] shadow-2xl border border-fuchsia-100 overflow-hidden my-auto">
+            <div class="bg-gradient-to-r from-fuchsia-700 via-purple-700 to-cyan-700 text-white px-4 py-4 flex items-center justify-between gap-3">
+                <button onclick="closeContinuousSimulationMode()" class="p-2 rounded-xl bg-white/15 active:bg-white/25" aria-label="กลับหน้าหลัก">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center min-w-0">
+                    <div class="font-black text-lg sm:text-xl">แข่งขันเสมือนจริงแบบต่อเนื่อง</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-white/75">ต้องถูกครบและเฉลี่ยไม่เกิน 3.60 วินาทีต่อข้อ</div>
+                </div>
+                <div class="w-9"></div>
+            </div>
+            <div class="p-4 sm:p-5 space-y-4">
+                <section class="rounded-2xl border border-fuchsia-100 bg-fuchsia-50/70 p-3">
+                    <div class="font-black text-slate-800 text-sm mb-2">เลือกระดับ</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="continuousPrimaryBtn" onclick="setContinuousSimulationLevel('primary')" class="continuous-level-btn py-3 rounded-xl border border-fuchsia-200 bg-white text-fuchsia-900 font-black">ประถมศึกษา</button>
+                        <button id="continuousSecondaryBtn" onclick="setContinuousSimulationLevel('secondary')" class="continuous-level-btn py-3 rounded-xl border border-fuchsia-200 bg-white text-fuchsia-900 font-black">มัธยมศึกษา</button>
+                    </div>
+                </section>
+                <section class="rounded-2xl border border-purple-100 bg-purple-50/70 p-3">
+                    <div class="font-black text-slate-800 text-sm mb-2">รูปแบบการผ่าน</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button id="continuousPlan25Btn" onclick="setContinuousSimulationPlan(25)" class="continuous-plan-btn rounded-xl border border-purple-200 bg-white p-3 text-left">
+                            <div class="font-black text-purple-900">25 ข้อ × 10 ครั้ง</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">เป้ารอบละไม่เกิน 1:30 นาที • ผ่านติดต่อกัน 10 รอบ</div>
+                        </button>
+                        <button id="continuousPlan50Btn" onclick="setContinuousSimulationPlan(50)" class="continuous-plan-btn rounded-xl border border-purple-200 bg-white p-3 text-left">
+                            <div class="font-black text-purple-900">50 ข้อ × 5 ครั้ง</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">เป้ารอบละไม่เกิน 3:00 นาที • ผ่านติดต่อกัน 5 รอบ</div>
+                        </button>
+                    </div>
+                </section>
+                <section class="rounded-2xl border border-cyan-100 bg-cyan-50/70 p-3 text-sm">
+                    <div class="font-black text-cyan-950">กติกาการทดสอบ</div>
+                    <div class="mt-2 space-y-1.5 text-[12px] font-bold text-cyan-900/80 leading-relaxed">
+                        <div>• พิมพ์คำตอบแล้วกด Enter ทุกข้อ</div>
+                        <div>• โจทย์ที่แสดงแล้วจะไม่ซ้ำตลอดการทดสอบครั้งนี้</div>
+                        <div>• ตอบผิดแม้แต่ข้อเดียว หรือทำรอบนั้นเกินเวลา จะเริ่มสะสมใหม่ที่ครั้งที่ 1</div>
+                        <div>• ผ่านเมื่อทำถูกครบและเวลาเฉลี่ย ≤ 3.60 วินาที/ข้อครบตามจำนวนครั้งติดต่อกัน</div>
+                    </div>
+                </section>
+                <div id="continuousSavedProgress" class="hidden rounded-2xl border border-amber-200 bg-amber-50 p-3"></div>
+                <div id="continuousPoolSummary" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-[11px] font-bold text-slate-600"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button id="continuousContinueBtn" onclick="continueContinuousSimulation()" class="hidden py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black shadow-lg active:scale-95">เล่นต่อจากที่บันทึกไว้</button>
+                    <button onclick="startNewContinuousSimulation()" class="py-3.5 rounded-2xl bg-fuchsia-700 hover:bg-fuchsia-800 text-white font-black shadow-lg active:scale-95">เริ่มการทดสอบใหม่</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="continuousSimPlayScreen" class="hidden flex-col text-white">
+        <div id="continuousPlayHeader" class="shrink-0 bg-slate-950/95 border-b border-white/10 px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2">
+            <button onclick="askQuitContinuousSimulation()" class="p-2 rounded-xl bg-white/10 active:bg-white/20" aria-label="ออก">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18"></path><path d="m9 18-6-6 6-6"></path></svg>
+            </button>
+            <div class="min-w-0 flex-1 text-center">
+                <div id="continuousStreakText" class="font-black text-sm sm:text-base truncate">ผ่านต่อเนื่อง 0 / 10</div>
+                <div id="continuousRoundMeta" class="text-[10px] sm:text-xs font-bold text-slate-400 truncate">รอบที่ 1 • 25 ข้อ</div>
+            </div>
+            <button onclick="toggleContinuousFullscreen()" class="p-2 rounded-xl bg-white/10 active:bg-white/20" aria-label="เต็มจอ">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M8 21H5a2 2 0 0 1-2-2v-3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+            </button>
+        </div>
+        <div class="shrink-0 h-2 bg-slate-800"><div id="continuousRoundBar" class="h-full bg-fuchsia-500 w-full origin-left"></div></div>
+        <div id="continuousQuestionPanel" class="flex-1 min-h-0 flex flex-col items-center justify-center px-3 sm:px-6 py-3">
+            <div class="w-full max-w-4xl flex items-center justify-between gap-2 mb-2">
+                <div class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-center">
+                    <div class="text-[9px] font-black text-slate-400">ข้อ</div>
+                    <div id="continuousQuestionProgress" class="font-black tabular-nums">1 / 25</div>
+                </div>
+                <div id="continuousTimerBox" class="px-4 py-2 rounded-xl bg-fuchsia-950/80 border border-fuchsia-500/40 text-center min-w-[126px]">
+                    <div class="text-[9px] font-black text-fuchsia-200">เวลารอบ / เป้าหมาย</div>
+                    <div id="continuousElapsedText" class="text-xl sm:text-2xl font-black tabular-nums">0.00 / 1:30</div>
+                </div>
+                <div class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-center">
+                    <div class="text-[9px] font-black text-slate-400">เฉลี่ยปัจจุบัน</div>
+                    <div id="continuousAverageText" class="font-black tabular-nums">0.00 วิ</div>
+                </div>
+            </div>
+            <div class="flex-1 min-h-0 w-full max-w-5xl rounded-[2rem] bg-white text-slate-900 shadow-2xl flex flex-col items-center justify-center px-4 py-4 overflow-hidden">
+                <div id="continuousQuestionText" class="font-black text-center">13 × 12 =</div>
+                <div class="mt-4 sm:mt-6 flex items-end justify-center gap-3">
+                    <div id="continuousAnswerText" class="font-black text-center border-b-4 border-fuchsia-600 pb-1 text-fuchsia-800">&nbsp;</div>
+                </div>
+                <div class="mt-3 text-xs sm:text-sm font-bold text-slate-400">พิมพ์คำตอบ แล้วกด Enter</div>
+            </div>
+        </div>
+        <div id="continuousNumpadWrap" class="shrink-0 bg-slate-950/96 rounded-t-[1.5rem] px-3 pt-2 pb-[max(.75rem,env(safe-area-inset-bottom))] flex justify-center">
+            <div id="continuousNumpad" class="w-full max-w-xl grid gap-2">
+                <button onclick="continuousDigit('7')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">7</button>
+                <button onclick="continuousDigit('8')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">8</button>
+                <button onclick="continuousDigit('9')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">9</button>
+                <button onclick="continuousDigit('4')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">4</button>
+                <button onclick="continuousDigit('5')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">5</button>
+                <button onclick="continuousDigit('6')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">6</button>
+                <button onclick="continuousDigit('1')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">1</button>
+                <button onclick="continuousDigit('2')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">2</button>
+                <button onclick="continuousDigit('3')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">3</button>
+                <button onclick="continuousBackspace()" class="rounded-xl bg-rose-100 text-rose-700 text-xl font-black active:scale-95" aria-label="ลบ">⌫</button>
+                <button onclick="continuousDigit('0')" class="rounded-xl bg-white text-slate-900 text-2xl font-black active:scale-95">0</button>
+                <button onclick="submitContinuousAnswer()" class="rounded-xl bg-emerald-600 text-white text-lg font-black active:scale-95">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="continuousSimResultScreen" class="hidden items-center justify-center p-3 sm:p-5 text-white overflow-y-auto">
+        <div class="w-full max-w-lg rounded-[2rem] bg-white text-slate-900 shadow-2xl overflow-hidden my-auto">
+            <div id="continuousResultHeader" class="px-5 py-5 text-center bg-fuchsia-700 text-white">
+                <div id="continuousResultIcon" class="text-5xl mb-2">🎯</div>
+                <div id="continuousResultTitle" class="text-2xl font-black">ผ่านรอบนี้</div>
+                <div id="continuousResultSubtitle" class="text-sm font-bold text-white/80 mt-1">ผ่านต่อเนื่อง 1 / 10</div>
+            </div>
+            <div class="p-4 sm:p-5 space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาใช้จริง</div><div id="continuousResultTime" class="text-xl font-black tabular-nums">1:20.00</div></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาเฉลี่ย</div><div id="continuousResultAverage" class="text-xl font-black tabular-nums">3.20 วิ/ข้อ</div></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">ตอบถูก</div><div id="continuousResultCorrect" class="text-xl font-black">25 / 25</div></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">โจทย์ไม่ซ้ำที่ใช้แล้ว</div><div id="continuousResultUsed" class="text-xl font-black">25</div></div>
+                </div>
+                <div id="continuousResultReason" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-bold leading-relaxed"></div>
+                <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm font-bold text-rose-800"></div>
+                <button id="continuousNextRoundBtn" onclick="startContinuousNextRound()" class="w-full py-3.5 rounded-2xl bg-fuchsia-700 hover:bg-fuchsia-800 text-white font-black shadow-lg active:scale-95">เริ่มรอบต่อไป</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="returnToContinuousSetup()" class="py-3 rounded-xl bg-slate-100 text-slate-700 font-black active:scale-95">ตั้งค่า</button>
+                    <button onclick="closeContinuousSimulationMode()" class="py-3 rounded-xl bg-slate-800 text-white font-black active:scale-95">หน้าหลัก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div id="presentationSetupScreen" class="hidden items-center justify-center p-3 sm:p-5">
         <div class="w-full max-w-2xl max-h-[96dvh] bg-white rounded-3xl shadow-2xl border border-white overflow-hidden flex flex-col">
             <div class="bg-gradient-to-r from-rose-700 via-rose-600 to-orange-500 text-white px-4 py-3 flex items-center justify-between shrink-0">
@@ -2808,6 +2987,9 @@
         </main>
     </div>
 </div>
+
+
+
 
 
 
