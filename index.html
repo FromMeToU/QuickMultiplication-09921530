@@ -1340,6 +1340,75 @@
     #continuousSimResultScreen.continuous-result-locked button {
         pointer-events: none !important;
     }
+    #continuousResultCard {
+        height: min(96dvh, 980px);
+    }
+    #continuousResultHeader {
+        flex: 0 0 auto;
+    }
+    #continuousResultTabContent {
+        overscroll-behavior: contain;
+    }
+    #continuousResultErrorsTab #continuousWrongDetail,
+    #continuousResultTimesTab #continuousQuestionTimesDetail {
+        min-height: 100%;
+    }
+    #continuousResultErrorsTab #continuousWrongDetail > div:last-child,
+    #continuousResultTimesTab #continuousQuestionTimesDetail > div:last-child {
+        max-height: none !important;
+    }
+    @media (max-width: 640px) {
+        #continuousSimResultScreen {
+            padding: .35rem !important;
+            align-items: stretch !important;
+            justify-content: stretch !important;
+        }
+        #continuousResultCard {
+            width: 100% !important;
+            max-width: none !important;
+            height: calc(100dvh - .7rem) !important;
+            max-height: calc(100dvh - .7rem) !important;
+            border-radius: 1.45rem !important;
+            margin: 0 !important;
+        }
+        #continuousResultHeader {
+            padding: .8rem 1rem !important;
+        }
+        #continuousResultIcon {
+            font-size: 2.25rem !important;
+            line-height: 1 !important;
+            margin-bottom: .25rem !important;
+        }
+        #continuousResultTitle {
+            font-size: 1.45rem !important;
+            line-height: 1.15 !important;
+        }
+        #continuousResultSubtitle {
+            font-size: .78rem !important;
+        }
+        #continuousResultTabsContainer {
+            gap: .35rem !important;
+            padding: .5rem !important;
+        }
+        #continuousResultTabsContainer button {
+            padding: .62rem .15rem !important;
+            font-size: .72rem !important;
+            line-height: 1.15 !important;
+        }
+        .continuous-result-tab {
+            padding: .65rem !important;
+        }
+        #continuousResultActions {
+            padding: .55rem .65rem max(.55rem, env(safe-area-inset-bottom)) !important;
+        }
+        #continuousResultActions > button {
+            padding-top: .7rem !important;
+            padding-bottom: .7rem !important;
+        }
+        #continuousResultErrorsEmptyState {
+            min-height: 180px !important;
+        }
+    }
 
     @media (orientation:portrait) {
         #continuousGamePlayCard { max-width:none !important; width:100% !important; height:100dvh !important; border-radius:0 !important; }
@@ -2679,15 +2748,23 @@
         </div>
     </div>
 
-    <div id="continuousSimResultScreen" class="hidden items-center justify-center p-3 sm:p-5 text-white overflow-y-auto">
-        <div class="w-full max-w-lg rounded-[2rem] bg-white text-slate-900 shadow-2xl overflow-hidden my-auto">
+    <div id="continuousSimResultScreen" class="hidden items-center justify-center p-2 sm:p-5 text-white overflow-hidden">
+        <div id="continuousResultCard" class="continuous-result-card w-full max-w-lg max-h-[98dvh] rounded-[2rem] bg-white text-slate-900 shadow-2xl overflow-hidden my-auto flex flex-col">
             <div id="continuousResultHeader" class="px-5 py-5 text-center bg-fuchsia-700 text-white">
                 <div id="continuousResultIcon" class="text-5xl mb-2">🎯</div>
                 <div id="continuousResultTitle" class="text-2xl font-black">ผ่านรอบนี้</div>
                 <div id="continuousResultSubtitle" class="text-sm font-bold text-white/80 mt-1">ผ่านต่อเนื่อง 1 / 10</div>
             </div>
-            <div class="p-4 sm:p-5 space-y-3">
-                <div class="grid grid-cols-2 gap-2">
+
+            <div id="continuousResultTabsContainer" class="grid grid-cols-3 gap-2 p-3 pb-2 bg-white border-b border-slate-100 shrink-0">
+                <button id="continuousResultTabSummaryBtn" onclick="setContinuousResultTab('summary')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-blue-600 text-white shadow-sm">สรุปผล</button>
+                <button id="continuousResultTabErrorsBtn" onclick="setContinuousResultTab('errors')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-white text-slate-600 border border-slate-200">ข้อผิด/ไม่ทัน (0)</button>
+                <button id="continuousResultTabTimesBtn" onclick="setContinuousResultTab('times')" class="py-2.5 rounded-xl font-black text-xs sm:text-sm bg-white text-slate-600 border border-slate-200">เวลาต่อข้อ</button>
+            </div>
+
+            <div id="continuousResultTabContent" class="flex-1 min-h-0 overflow-hidden bg-white">
+                <div id="continuousResultSummaryTab" class="continuous-result-tab h-full overflow-y-auto custom-scrollbar p-4 sm:p-5 space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาใช้จริงรอบนี้</div><div id="continuousResultTime" class="text-xl font-black tabular-nums">1:20.00</div></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">เวลาเฉลี่ยรอบนี้</div><div id="continuousResultAverage" class="text-xl font-black tabular-nums">3.20 วิ/ข้อ</div></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3 text-center"><div class="text-[10px] font-black text-slate-400">ตอบถูก</div><div id="continuousResultCorrect" class="text-xl font-black">25 / 25</div></div>
@@ -2710,7 +2787,35 @@
                     <div id="continuousResultResetNotice" class="hidden mt-2 rounded-xl bg-white/80 border border-blue-100 px-3 py-2 text-[11px] font-bold text-slate-600 text-center"></div>
                 </div>
                 <div id="continuousResultReason" class="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-bold leading-relaxed"></div>
-                <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 overflow-hidden">
+                    <div id="continuousRoundsOverview" class="hidden rounded-2xl border border-emerald-200 bg-white overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-emerald-100 bg-emerald-50">
+                        <div class="text-sm font-black text-emerald-950">ภาพรวมเวลาทั้งหมดแต่ละรอบ</div>
+                        <div class="text-[11px] font-bold text-emerald-700">แสดงเวลาของทุกครั้งที่ผ่านต่อเนื่องจนครบ 250 ข้อ</div>
+                    </div>
+                    <div class="max-h-[36dvh] overflow-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="sticky top-0 z-10 bg-emerald-100 text-emerald-950">
+                                <tr>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">รอบ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">จำนวน</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">เวลารอบ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">เฉลี่ย/ข้อ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">เทียบเกณฑ์</th>
+                                </tr>
+                            </thead>
+                            <tbody id="continuousRoundsOverviewBody" class="divide-y divide-emerald-50 text-xs font-bold text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+
+                <div id="continuousResultErrorsTab" class="continuous-result-tab hidden h-full overflow-y-auto custom-scrollbar p-4 sm:p-5">
+                    <div id="continuousResultErrorsEmptyState" class="hidden min-h-[220px] rounded-2xl border border-emerald-200 bg-emerald-50 p-5 flex-col items-center justify-center text-center">
+                        <div class="text-5xl mb-3">✅</div>
+                        <div class="text-lg font-black text-emerald-800">ไม่มีข้อผิดหรือไม่ทัน</div>
+                        <div class="mt-1 text-sm font-bold text-emerald-600">รอบนี้ตอบครบและถูกทุกข้อ</div>
+                    </div>
+                    <div id="continuousWrongDetail" class="hidden rounded-2xl border border-rose-200 bg-rose-50 overflow-hidden">
                     <div class="px-3 py-2.5 border-b border-rose-200 flex items-center justify-between gap-2">
                         <div>
                             <div class="text-sm font-black text-rose-900">ข้อที่ผิดหรือไม่ทัน</div>
@@ -2734,6 +2839,38 @@
                         </table>
                     </div>
                 </div>
+                </div>
+
+                <div id="continuousResultTimesTab" class="continuous-result-tab hidden h-full overflow-y-auto custom-scrollbar p-4 sm:p-5">
+                    <div id="continuousQuestionTimesDetail" class="rounded-2xl border border-blue-200 bg-white overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-blue-100 bg-blue-50 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="text-sm font-black text-blue-950">เวลาที่ใช้แต่ละข้อ</div>
+                            <div class="text-[11px] font-bold text-blue-700">เรียงจากใช้เวลานานที่สุดไปน้อยที่สุด</div>
+                        </div>
+                        <div id="continuousQuestionTimesBadge" class="shrink-0 px-2.5 py-1 rounded-full bg-blue-600 text-white text-xs font-black">0 ข้อ</div>
+                    </div>
+                    <div class="max-h-[42dvh] overflow-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="sticky top-0 z-10 bg-blue-100 text-blue-950">
+                                <tr>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ข้อ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ชุด</th>
+                                    <th class="px-3 py-2 text-[11px] font-black">โจทย์</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">เวลา</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">เข้าข้อ</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ผล</th>
+                                    <th class="px-3 py-2 text-[11px] font-black whitespace-nowrap">ติว</th>
+                                </tr>
+                            </thead>
+                            <tbody id="continuousQuestionTimesTableBody" class="divide-y divide-blue-50 text-xs font-bold text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div id="continuousResultActions" class="p-4 pt-2 bg-white border-t border-slate-100 shrink-0 space-y-2">
                 <button id="continuousNextRoundBtn" onclick="startContinuousNextRound()" class="w-full py-3.5 rounded-2xl bg-fuchsia-700 hover:bg-fuchsia-800 text-white font-black shadow-lg active:scale-95">เริ่มรอบต่อไป</button>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="returnToContinuousSetup()" class="py-3 rounded-xl bg-slate-100 text-slate-700 font-black active:scale-95">ตั้งค่า</button>
