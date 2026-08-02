@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -1718,7 +1719,7 @@
                     <div class="font-black text-slate-800 text-left mb-3">เลือกฝึกเฉพาะด้าน</div>
                     <div class="grid grid-cols-2 gap-2">
                         <button onclick="startTrainingPlanDrill('diagnostic')" class="coach-task"><div class="text-2xl">🔎</div><div class="font-black text-slate-800 text-sm">ตรวจวัด 25 ข้อ</div><div class="text-[11px] font-bold text-slate-400">3 นาที</div></button>
-                        <button onclick="startTrainingPlanDrill('precision')" class="coach-task"><div class="text-2xl">🎯</div><div class="font-black text-slate-800 text-sm">ความแม่น 100%</div><div class="text-[11px] font-bold text-slate-400">รวมข้อผิดจากเกมกด Enter</div></button>
+                        <button onclick="openWrongBankManager('coach')" class="coach-task border-2 border-rose-200 bg-rose-50"><div class="text-2xl">🎯</div><div class="font-black text-rose-800 text-sm">คลังข้อผิดจาก Enter</div><div id="coachWrongBankCount" class="text-[11px] font-bold text-rose-600">สะสมข้อที่ตอบผิดจริง</div></button>
                         <button onclick="startTrainingPlanDrill('basicSpeed')" class="coach-task"><div class="text-2xl">⚡</div><div class="font-black text-slate-800 text-sm">สปีดชุดพื้นฐาน</div><div class="text-[11px] font-bold text-slate-400">ชุด 1–2/3</div></button>
                         <button onclick="startTrainingPlanDrill('hardSpeed')" class="coach-task"><div class="text-2xl">🔥</div><div class="font-black text-slate-800 text-sm">สปีดเลข 2 หลัก</div><div class="text-[11px] font-bold text-slate-400">ชุดยาก</div></button>
                         <button onclick="startTrainingPlanDrill('slow20')" class="coach-task"><div class="text-2xl">⏱️</div><div class="font-black text-slate-800 text-sm">ข้อช้าสุด 20%</div><div class="text-[11px] font-bold text-slate-400">แก้คอขวดเวลา</div></button>
@@ -1895,6 +1896,60 @@
             <div class="p-4 border-t bg-white shrink-0"><button onclick="startConfiguredSlow10Practice()" class="w-full py-4 rounded-2xl bg-orange-600 text-white font-black text-lg shadow-md active:scale-[.98]">เริ่มฝึกข้อช้า</button></div>
         </div>
     </div>
+
+    <div id="wrongBankManagerModal" class="fixed inset-0 z-[104] hidden items-center justify-center bg-slate-950/65 p-3">
+        <div class="w-full max-w-lg max-h-[95dvh] bg-white rounded-[2rem] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-rose-600 text-white p-4 flex items-center justify-between shrink-0">
+                <div class="text-left">
+                    <div class="font-black text-lg">คลังข้อผิดจากการแข่งขัน</div>
+                    <div id="wrongBankSubtitle" class="text-xs font-bold text-rose-100"></div>
+                </div>
+                <button onclick="closeWrongBankManager()" class="w-10 h-10 rounded-xl bg-rose-500 font-black text-xl">×</button>
+            </div>
+
+            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 space-y-4 bg-slate-50">
+                <section class="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-left">
+                    <div class="font-black text-rose-800 text-sm">เก็บเฉพาะข้อที่ตอบผิดจริง</div>
+                    <div class="mt-1 text-[11px] font-bold text-rose-600 leading-relaxed">
+                        รวมจากการแข่งขันทุกรูปแบบที่ส่งคำตอบด้วยปุ่ม Enter โดยไม่รวมข้อที่หมดเวลา ไม่ทัน หรือไม่ได้ตอบ
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-2xl border border-slate-100 p-3">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <div class="text-left">
+                            <div class="font-black text-slate-800 text-sm">โจทย์ที่สะสมไว้</div>
+                            <div class="text-[10px] font-bold text-slate-400">โจทย์เดิมที่ผิดหลายครั้งจะถูกให้น้ำหนักฝึกมากขึ้น</div>
+                        </div>
+                        <button onclick="restoreAllWrongBankQuestions()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-black text-[11px]">คืนข้อที่ลบ</button>
+                    </div>
+                    <div id="wrongBankQuestionList" class="space-y-2 max-h-[42dvh] overflow-y-auto custom-scrollbar"></div>
+                </section>
+
+                <section class="bg-white rounded-2xl border border-slate-100 p-3">
+                    <div class="text-left text-xs font-black text-slate-700 mb-2">จำนวนข้อที่จะฝึก</div>
+                    <div id="wrongBankCountChoices" class="grid grid-cols-3 gap-2"></div>
+                    <div class="mt-2 text-[10px] font-bold text-slate-400 text-left">
+                        หากเลือกมากกว่าจำนวนโจทย์ในคลัง ระบบจะนำข้อที่ผิดบ่อยกลับมาฝึกซ้ำ
+                    </div>
+                </section>
+
+                <section class="rounded-2xl border border-blue-100 bg-blue-50 p-3 text-left">
+                    <div class="font-black text-blue-800 text-sm">รูปแบบการฝึก</div>
+                    <div class="mt-1 text-[11px] font-bold text-blue-600">
+                        จับเวลาเดินหน้าแบบไม่จำกัด เพื่อให้แก้ข้อผิดจนทำครบทุกข้อ
+                    </div>
+                </section>
+            </div>
+
+            <div class="p-4 border-t bg-white shrink-0">
+                <button onclick="startWrongBankPractice()" class="w-full py-4 rounded-2xl bg-rose-600 text-white font-black text-lg shadow-md active:scale-[.98]">
+                    เริ่มฝึกคลังข้อผิด
+                </button>
+            </div>
+        </div>
+    </div>
+
 
     <div id="homeShortcutModal" class="fixed inset-0 z-[104] hidden items-center justify-center bg-slate-950/60 p-3">
         <div class="w-full max-w-md bg-white rounded-[2rem] shadow-2xl overflow-hidden">
