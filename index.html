@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -970,6 +971,158 @@
         }
         body.multiplayer-race-smooth #questionProgressBar { will-change:width; }
         body.multiplayer-race-smooth #multiplayerRoundPanel { contain:layout paint; }
+        body.multiplayer-race-smooth #navControls button:disabled {
+            opacity:.4 !important;
+            pointer-events:none !important;
+            box-shadow:none !important;
+        }
+
+        /*
+         * แข่งขันจริงแบบครบชุดบนมือถือแนวตั้ง
+         * เดิมเพียงเปิดแถบย้อนกลับ/ถัดไปเพิ่ม ทำให้แป้นพิมพ์ดันพื้นที่โจทย์จนถูกตัด
+         * ชุดกฎนี้จัดสัดส่วนใหม่ทั้งหน้า โดยยังคงหน้าตาเดิมของโหมดปกติ
+         */
+        @media (orientation: portrait) and (max-width: 700px) {
+            body.multiplayer-race-smooth #gamePlayCard {
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+                overflow: hidden !important;
+            }
+
+            body.multiplayer-race-smooth #gamePlayCard > .bg-blue-600 {
+                min-height: 3.55rem !important;
+                padding: .45rem .65rem !important;
+            }
+            body.multiplayer-race-smooth #gamePlayCard > .bg-blue-600 .p-2 {
+                padding: .55rem !important;
+                border-radius: .9rem !important;
+            }
+            body.multiplayer-race-smooth #gamePlayCard > .bg-blue-600 svg {
+                width: 1.35rem !important;
+                height: 1.35rem !important;
+            }
+            body.multiplayer-race-smooth #timerDisplay {
+                font-size: clamp(1.55rem, 7vw, 2rem) !important;
+                line-height: 1 !important;
+            }
+
+            body.multiplayer-race-smooth #multiplayerRoomCodeBar {
+                min-height: 2.15rem !important;
+                padding-top: .28rem !important;
+                padding-bottom: .28rem !important;
+            }
+            body.multiplayer-race-smooth #multiplayerRoomCodeText {
+                font-size: .78rem !important;
+            }
+
+            body.multiplayer-race-smooth #progressInfoBar {
+                min-height: 3.55rem !important;
+                height: 3.55rem !important;
+                padding: .28rem .55rem !important;
+                grid-template-columns: minmax(0, .95fr) minmax(6.8rem, 1.15fr) minmax(0, .95fr) !important;
+                column-gap: .3rem !important;
+                font-size: .68rem !important;
+                line-height: 1.15 !important;
+            }
+            body.multiplayer-race-smooth #liveScoreInfo {
+                min-height: 2.1em !important;
+                font-size: .7rem !important;
+                line-height: 1.1 !important;
+            }
+
+            body.multiplayer-race-smooth #questionArea {
+                flex: 1 1 auto !important;
+                min-height: 9.5rem !important;
+                padding: .35rem .55rem !important;
+                overflow: hidden !important;
+                justify-content: center !important;
+            }
+            body.multiplayer-race-smooth #questionText,
+            body.multiplayer-race-smooth #answerText {
+                font-size: clamp(2.8rem, 13vw, 4rem) !important;
+                line-height: 1 !important;
+            }
+            body.multiplayer-race-smooth #questionArea .border-b-4 {
+                width: clamp(7.5rem, 30vw, 9.5rem) !important;
+                height: clamp(3.2rem, 14vw, 4.1rem) !important;
+                margin-left: .55rem !important;
+                padding-bottom: 0 !important;
+            }
+            body.multiplayer-race-smooth #sourceMultiplicationHint {
+                margin-top: .15rem !important;
+                font-size: .68rem !important;
+                line-height: 1.05 !important;
+            }
+            body.multiplayer-race-smooth #questionProgressBarContainer {
+                width: min(52vw, 240px) !important;
+                height: .34rem !important;
+                margin-top: .3rem !important;
+            }
+            body.multiplayer-race-smooth #questionTimeText {
+                margin-top: .18rem !important;
+                font-size: .66rem !important;
+                line-height: 1.05 !important;
+            }
+
+            body.multiplayer-race-smooth #numpadArea {
+                flex: 0 0 auto !important;
+                min-height: 0 !important;
+                padding: .4rem .55rem max(env(safe-area-inset-bottom), .35rem) !important;
+                border-radius: 1.25rem 1.25rem 0 0 !important;
+                overflow: hidden !important;
+            }
+            body.multiplayer-race-smooth #numpadShell {
+                width: min(94vw, 360px) !important;
+                max-width: min(94vw, 360px) !important;
+                padding-bottom: 0 !important;
+            }
+            body.multiplayer-race-smooth #navControls {
+                gap: .42rem !important;
+                margin-bottom: .42rem !important;
+            }
+            body.multiplayer-race-smooth #navControls button {
+                min-height: 2.55rem !important;
+                padding: .55rem .35rem !important;
+                border-radius: 1rem !important;
+                font-size: .82rem !important;
+                line-height: 1 !important;
+            }
+            body.multiplayer-race-smooth #navControls button svg {
+                width: 1rem !important;
+                height: 1rem !important;
+            }
+            body.multiplayer-race-smooth #numpadContainer {
+                gap: .42rem !important;
+                grid-auto-rows: clamp(3.35rem, 7.2dvh, 4rem) !important;
+            }
+            body.multiplayer-race-smooth #numpadContainer button {
+                min-height: 0 !important;
+                height: 100% !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                border-radius: 1rem !important;
+                font-size: clamp(1.85rem, 7vw, 2.45rem) !important;
+                line-height: 1 !important;
+            }
+            body.multiplayer-race-smooth #numpadContainer button svg {
+                width: clamp(1.8rem, 7vw, 2.35rem) !important;
+                height: clamp(1.8rem, 7vw, 2.35rem) !important;
+            }
+        }
+
+        @media (orientation: portrait) and (max-width: 700px) and (max-height: 650px) {
+            body.multiplayer-race-smooth #questionArea {
+                min-height: 7.9rem !important;
+            }
+            body.multiplayer-race-smooth #numpadContainer {
+                grid-auto-rows: 3.15rem !important;
+            }
+            body.multiplayer-race-smooth #navControls button {
+                min-height: 2.35rem !important;
+                padding-top: .4rem !important;
+                padding-bottom: .4rem !important;
+            }
+        }
 
     
         @media (orientation: landscape) and (max-height: 650px) {
@@ -2360,11 +2513,11 @@
                     
                     <!-- Prev / Next Controls Above Numpad -->
                     <div id="navControls" class="grid grid-cols-2 gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                        <button onclick="changeQuestion(-1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
+                        <button id="prevQuestionBtn" onclick="changeQuestion(-1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
                             <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> 
                             ย้อนกลับ
                         </button>
-                        <button onclick="changeQuestion(1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
+                        <button id="nextQuestionBtn" onclick="changeQuestion(1)" class="py-2.5 sm:py-3 bg-white text-gray-600 rounded-2xl font-medium shadow-sm active:bg-gray-200 flex justify-center items-center gap-1 border border-gray-100 text-sm sm:text-base">
                             ข้าม 
                             <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
@@ -2689,14 +2842,18 @@
                 </section>
                 <section class="rounded-2xl border border-purple-100 bg-purple-50/70 p-3">
                     <div class="font-black text-slate-800 text-sm mb-2">รูปแบบการผ่าน</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <button id="continuousPlan25Btn" onclick="setContinuousSimulationPlan(25)" class="continuous-plan-btn rounded-xl border border-purple-200 bg-white p-3 text-left">
                             <div class="font-black text-purple-900">25 ข้อ × 10 ครั้ง</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1">5 ชุดย่อย ชุดละ 5 ข้อ • เป้ารอบละไม่เกิน 1:30 นาที • ผ่านติดต่อกัน 10 รอบ</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">5 ชุดย่อย ชุดละ 5 ข้อ • รอบละไม่เกิน 1:30 นาที • ผ่านติดต่อกัน 10 รอบ</div>
                         </button>
                         <button id="continuousPlan50Btn" onclick="setContinuousSimulationPlan(50)" class="continuous-plan-btn rounded-xl border border-purple-200 bg-white p-3 text-left">
                             <div class="font-black text-purple-900">50 ข้อ × 5 ครั้ง</div>
-                            <div class="text-[11px] font-bold text-slate-500 mt-1">5 ชุดย่อย ชุดละ 10 ข้อ • เป้ารอบละไม่เกิน 3:00 นาที • ผ่านติดต่อกัน 5 รอบ</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">5 ชุดย่อย ชุดละ 10 ข้อ • รอบละไม่เกิน 3:00 นาที • ผ่านติดต่อกัน 5 รอบ</div>
+                        </button>
+                        <button id="continuousPlan250Btn" onclick="setContinuousSimulationPlan(250)" class="continuous-plan-btn rounded-xl border border-purple-200 bg-white p-3 text-left">
+                            <div class="font-black text-purple-900">250 ข้อ × 1 ครั้ง</div>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1">5 ชุดย่อย ชุดละ 50 ข้อ • ทำครบภายใน 15:00 นาที • เฉลี่ยไม่เกิน 3.60 วิ/ข้อ</div>
                         </button>
                     </div>
                 </section>
@@ -2706,8 +2863,9 @@
                         <div>• พิมพ์คำตอบแล้วกด Enter ทุกข้อ</div>
                         <div>• ทุกรอบแบ่งเป็น 5 ชุดย่อยตามเกณฑ์จริง และไม่มีโจทย์ซ้ำภายในรอบเดียวกัน</div>
                         <div>• ตอบผิดแม้แต่ข้อเดียว หรือทำรอบนั้นเกินเวลา จะเริ่มสะสมใหม่ที่ครั้งที่ 1</div>
-                        <div>• ผ่านเมื่อทำถูกครบและเวลาเฉลี่ย ≤ 3.60 วินาที/ข้อครบตามจำนวนครั้งติดต่อกัน</div>
-                        <div>• ระบบรวมเวลาของรอบที่ผ่านต่อเนื่องทั้งหมด แล้วสรุปเวลาและค่าเฉลี่ยจริงเมื่อครบ 250 ข้อ</div>
+                        <div>• ผ่านเมื่อทำถูกครบและเวลาเฉลี่ย ≤ 3.60 วินาที/ข้อครบตามจำนวนครั้งของแผนที่เลือก</div>
+                        <div>• แผน 250 ข้อเป็นการทดสอบรอบเดียว ต้องทำถูกครบภายใน 15 นาที</div>
+                        <div>• ระบบรวมเวลาของรอบที่ผ่านทั้งหมด แล้วสรุปเวลาและค่าเฉลี่ยจริงเมื่อครบ 250 ข้อ</div>
                     </div>
                 </section>
                 <div id="continuousSavedProgress" class="hidden rounded-2xl border border-amber-200 bg-amber-50 p-3"></div>
