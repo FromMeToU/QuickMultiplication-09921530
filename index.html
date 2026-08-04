@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -962,6 +961,15 @@
             .mp-split-grid { grid-template-columns:1fr; grid-template-rows:1fr 1fr; }
             .mp-monitor-question { font-size:clamp(3rem,16vw,6rem); }
         }
+        body.multiplayer-race-smooth #gamePlayCard,
+        body.multiplayer-race-smooth #questionArea,
+        body.multiplayer-race-smooth #numpadArea {
+            backface-visibility:hidden;
+            -webkit-backface-visibility:hidden;
+            transform:translateZ(0);
+        }
+        body.multiplayer-race-smooth #questionProgressBar { will-change:width; }
+        body.multiplayer-race-smooth #multiplayerRoundPanel { contain:layout paint; }
 
     
         @media (orientation: landscape) and (max-height: 650px) {
